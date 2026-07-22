@@ -7,236 +7,296 @@
   <style>
     * { box-sizing: border-box; }
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background-color: #121212;
       color: #ffffff;
+      margin: 0;
+      padding: 20px 15px;
       display: flex;
       justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      margin: 0;
-      padding: 15px;
+    }
+    .container {
+      max-width: 450px;
+      width: 100%;
     }
     .card {
       background-color: #1e1e1e;
-      border-radius: 12px;
-      padding: 24px;
-      max-width: 450px;
-      width: 100%;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.6);
-      text-align: center;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
     }
-    h1 { color: #e94560; margin-top: 0; }
-    h2 { color: #00adb5; font-size: 1.2rem; }
-    .step { display: none; }
-    .step.active { display: block; }
-    .role-select {
+    h1 { color: #e94560; margin-top: 0; text-align: center; }
+    h2 { color: #00adb5; font-size: 1.2rem; margin-top: 0; }
+    
+    /* Zahler-Zeilen */
+    .role-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin: 10px 0;
+      margin: 12px 0;
       background: #2a2a2a;
-      padding: 8px 12px;
-      border-radius: 8px;
+      padding: 10px 14px;
+      border-radius: 10px;
     }
     input[type="number"], input[type="text"] {
       padding: 10px;
-      border-radius: 6px;
+      border-radius: 8px;
       border: 1px solid #444;
       background: #333;
       color: #fff;
-      width: 100%;
-      margin-bottom: 10px;
       font-size: 1rem;
     }
-    .role-select input { width: 60px; margin-bottom: 0; text-align: center; }
+    .role-row input[type="number"] { width: 60px; text-align: center; }
+    input[type="text"] { width: 100%; margin-bottom: 10px; }
+
+    /* Schieberegler (Toggle Switch) */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 28px;
+    }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #444;
+      transition: .3s;
+      border-radius: 28px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+    input:checked + .slider { background-color: #00adb5; }
+    input:checked + .slider:before { transform: translateX(22px); }
+
     button {
       background-color: #e94560;
       color: white;
       border: none;
-      padding: 12px 20px;
+      padding: 14px;
       font-size: 1rem;
       font-weight: bold;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
       width: 100%;
-      margin-top: 15px;
+      margin-top: 10px;
     }
-    button:hover { background-color: #c0354d; }
+    button:active { background-color: #c0354d; }
+
+    /* Scroll-Liste für Karten */
+    .player-card {
+      background: #252a34;
+      border: 2px solid #333;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 15px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+    .player-name {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #fff;
+    }
     .secret-box {
-      background: #222831;
-      border: 2px dashed #00adb5;
-      border-radius: 10px;
-      padding: 20px;
-      margin: 20px 0;
-      min-height: 100px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
+      background: #181920;
+      border: 1px dashed #00adb5;
+      border-radius: 8px;
+      padding: 15px;
+      margin-top: 10px;
+      cursor: pointer;
     }
-    .role-text { font-size: 1.5rem; color: #4ecca3; font-weight: bold; }
-    .warning { color: #ff6b6b; font-size: 0.9rem; }
+    .role-title {
+      font-size: 1.4rem;
+      color: #4ecca3;
+      font-weight: bold;
+      display: none;
+    }
+    .tap-hint {
+      color: #888;
+      font-size: 0.9rem;
+    }
   </style>
 </head>
 <body>
 
-<div class="card">
+<div class="container">
   <h1>🐺 Werwolf</h1>
 
-  <!-- Schritt 1: Rollen auswählen -->
-  <div id="step1" class="step active">
-    <h2>1. Rollen im Spiel festlegen</h2>
-    <div class="role-select"><span>Werwolf 🐺</span><input type="number" id="count-werwolf" value="2" min="0"></div>
-    <div class="role-select"><span>Dorfbewohner 👨‍🌾</span><input type="number" id="count-dorf" value="2" min="0"></div>
-    <div class="role-select"><span>Seherin 🔮</span><input type="number" id="count-seherin" value="1" min="0"></div>
-    <div class="role-select"><span>Hexe 🧪</span><input type="number" id="count-hexe" value="1" min="0"></div>
-    <div class="role-select"><span>Amor 💘</span><input type="number" id="count-amor" value="0" min="0"></div>
-    <div class="role-select"><span>Jäger 🏹</span><input type="number" id="count-jaeger" value="0" min="0"></div>
-    <p id="total-roles-info">Gesamtanzahl Rollen: 6</p>
+  <!-- Schritt 1: Rollen -->
+  <div id="step1" class="card">
+    <h2>1. Rollen wählen</h2>
+    
+    <!-- Mehrfache Rollen -->
+    <div class="role-row">
+      <span>Werwolf 🐺</span>
+      <input type="number" id="count-werwolf" value="2" min="0" onchange="updateTotal()">
+    </div>
+    <div class="role-row">
+      <span>Dorfbewohner 👨‍🌾</span>
+      <input type="number" id="count-dorf" value="2" min="0" onchange="updateTotal()">
+    </div>
+
+    <hr style="border: 0; border-top: 1px solid #333; margin: 15px 0;">
+
+    <!-- Sonderrollen (An/Aus) -->
+    <div class="role-row">
+      <span>Seherin 🔮</span>
+      <label class="switch">
+        <input type="checkbox" id="toggle-seherin" checked onchange="updateTotal()">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="role-row">
+      <span>Hexe 🧪</span>
+      <label class="switch">
+        <input type="checkbox" id="toggle-hexe" checked onchange="updateTotal()">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="role-row">
+      <span>Amor 💘</span>
+      <label class="switch">
+        <input type="checkbox" id="toggle-amor" onchange="updateTotal()">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="role-row">
+      <span>Jäger 🏹</span>
+      <label class="switch">
+        <input type="checkbox" id="toggle-jaeger" onchange="updateTotal()">
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <p id="total-info" style="text-align: center; color: #aaa;">Gesamtanzahl: 6 Rollen</p>
     <button onclick="goToStep2()">Weiter zu den Spielern</button>
   </div>
 
-  <!-- Schritt 2: Spielernamen eingeben -->
-  <div id="step2" class="step">
-    <h2>2. Namen der Spieler</h2>
-    <p id="player-count-label"></p>
+  <!-- Schritt 2: Namen -->
+  <div id="step2" class="card" style="display: none;">
+    <h2>2. Spielernamen</h2>
     <div id="player-inputs"></div>
-    <button onclick="startGame()">Spiel starten & Rollen ziehen</button>
+    <button onclick="startGame()">Rollen verteilen</button>
   </div>
 
-  <!-- Schritt 3: Rollen ziehen (Pass & Play) -->
-  <div id="step3" class="step">
-    <h2 id="current-player-title">Spieler am Zug</h2>
-    <p class="warning">Gib das Handy an die gezeigte Person!</p>
-    
-    <div class="secret-box" id="secret-area">
-      <p id="instruction-text">Tippe auf den Button, um deine Rolle geheim anzuzeigen.</p>
-      <div id="role-display" class="role-text" style="display:none;"></div>
+  <!-- Schritt 3: Scroll-Karten -->
+  <div id="step3" style="display: none;">
+    <div style="text-align: center; margin-bottom: 15px; color: #aaa;">
+      👇 Scrollt nach unten & tippt auf eure Karte!
     </div>
-
-    <button id="action-btn" onclick="toggleRoleReveal()">Rolle anzeigen</button>
-  </div>
-
-  <!-- Schritt 4: Fertig -->
-  <div id="step4" class="step">
-    <h2>🎉 Alle Rollen wurden verteilt!</h2>
-    <p>Das Spiel kann jetzt beginnen. Der Spielleiter übernimmt ab hier.</p>
-    <button onclick="location.reload()">Neues Spiel starten</button>
+    <div id="cards-container"></div>
+    <button onclick="location.reload()" style="margin-top: 20px; background-color: #333;">Neues Spiel starten</button>
   </div>
 </div>
 
 <script>
-  let availableRoles = [];
-  let players = [];
-  let currentTurn = 0;
-  let isRevealed = false;
+  let rolesList = [];
 
-  // Aktualisiere Rollen-Anzahl dynamisch
-  document.querySelectorAll('.role-select input').forEach(input => {
-    input.addEventListener('input', updateTotalCount);
-  });
+  function updateTotal() {
+    let count = (parseInt(document.getElementById('count-werwolf').value) || 0) +
+                (parseInt(document.getElementById('count-dorf').value) || 0);
+    
+    if(document.getElementById('toggle-seherin').checked) count++;
+    if(document.getElementById('toggle-hexe').checked) count++;
+    if(document.getElementById('toggle-amor').checked) count++;
+    if(document.getElementById('toggle-jaeger').checked) count++;
 
-  function updateTotalCount() {
-    let total = 0;
-    document.querySelectorAll('.role-select input').forEach(i => total += parseInt(i.value) || 0);
-    document.getElementById('total-roles-info').innerText = `Gesamtanzahl Rollen: ${total}`;
+    document.getElementById('total-info').innerText = `Gesamtanzahl: ${count} Rollen`;
   }
 
   function goToStep2() {
-    availableRoles = [];
-    const roleMapping = {
-      'werwolf': 'Werwolf 🐺',
-      'dorf': 'Dorfbewohner 👨‍🌾',
-      'seherin': 'Seherin 🔮',
-      'hexe': 'Hexe 🧪',
-      'amor': 'Amor 💘',
-      'jaeger': 'Jäger 🏹'
-    };
+    rolesList = [];
+    
+    // Mehrfache Rollen hinzufügen
+    for(let i=0; i < (parseInt(document.getElementById('count-werwolf').value)||0); i++) rolesList.push('Werwolf 🐺');
+    for(let i=0; i < (parseInt(document.getElementById('count-dorf').value)||0); i++) rolesList.push('Dorfbewohner 👨‍🌾');
+    
+    // Sonderrollen einzeln hinzufügen
+    if(document.getElementById('toggle-seherin').checked) rolesList.push('Seherin 🔮');
+    if(document.getElementById('toggle-hexe').checked) rolesList.push('Hexe 🧪');
+    if(document.getElementById('toggle-amor').checked) rolesList.push('Amor 💘');
+    if(document.getElementById('toggle-jaeger').checked) rolesList.push('Jäger 🏹');
 
-    for (let key in roleMapping) {
-      let count = parseInt(document.getElementById(`count-${key}`).value) || 0;
-      for (let i = 0; i < count; i++) {
-        availableRoles.push(roleMapping[key]);
-      }
-    }
-
-    if (availableRoles.length === 0) {
+    if(rolesList.length === 0) {
       alert("Bitte wähle mindestens 1 Rolle aus!");
       return;
     }
 
-    // Rollen zufällig mischen (Fisher-Yates Shuffle)
-    for (let i = availableRoles.length - 1; i > 0; i--) {
+    // Rollen mischen
+    for (let i = rolesList.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [availableRoles[i], availableRoles[j]] = [availableRoles[j], availableRoles[i]];
+      [rolesList[i], rolesList[j]] = [rolesList[j], rolesList[i]];
     }
 
-    // Input-Felder für Spieler erzeugen
+    // Input-Felder erstellen
     const container = document.getElementById('player-inputs');
     container.innerHTML = '';
-    document.getElementById('player-count-label').innerText = `Trage ${availableRoles.length} Spielernamen ein:`;
-
-    for (let i = 0; i < availableRoles.length; i++) {
+    for(let i = 0; i < rolesList.length; i++) {
       const input = document.createElement('input');
       input.type = 'text';
-      input.placeholder = `Spieler ${i + 1}`;
-      input.id = `player-${i}`;
+      input.placeholder = `Spieler ${i+1}`;
+      input.id = `name-${i}`;
       container.appendChild(input);
     }
 
-    showStep('step2');
+    document.getElementById('step1').style.display = 'none';
+    document.getElementById('step2').style.display = 'block';
   }
 
   function startGame() {
-    players = [];
-    for (let i = 0; i < availableRoles.length; i++) {
-      let name = document.getElementById(`player-${i}`).value.trim();
-      if (!name) name = `Spieler ${i + 1}`;
-      players.push({ name: name, role: availableRoles[i] });
+    const container = document.getElementById('cards-container');
+    container.innerHTML = '';
+
+    for(let i = 0; i < rolesList.length; i++) {
+      let name = document.getElementById(`name-${i}`).value.trim();
+      if(!name) name = `Spieler ${i+1}`;
+
+      const card = document.createElement('div');
+      card.className = 'player-card';
+      card.innerHTML = `
+        <div class="player-name">${name}</div>
+        <div class="secret-box" onclick="toggleCard(this)">
+          <span class="tap-hint">👁️ Tippen zum Aufdecken</span>
+          <span class="role-title">${rolesList[i]}</span>
+        </div>
+      `;
+      container.appendChild(card);
     }
 
-    currentTurn = 0;
-    updateTurnUI();
-    showStep('step3');
+    document.getElementById('step2').style.display = 'none';
+    document.getElementById('step3').style.display = 'block';
   }
 
-  function updateTurnUI() {
-    isRevealed = false;
-    document.getElementById('current-player-title').innerText = `${players[currentTurn].name} ist dran!`;
-    document.getElementById('instruction-text').innerText = "Gib das Handy dieser Person. Tippe unten, um die Rolle zu sehen.";
-    document.getElementById('instruction-text').style.display = "block";
-    document.getElementById('role-display').style.display = "none";
-    document.getElementById('action-btn').innerText = "Rolle anzeigen";
-  }
+  function toggleCard(box) {
+    const hint = box.querySelector('.tap-hint');
+    const role = box.querySelector('.role-title');
 
-  function toggleRoleReveal() {
-    const roleDiv = document.getElementById('role-display');
-    const instruction = document.getElementById('instruction-text');
-    const btn = document.getElementById('action-btn');
-
-    if (!isRevealed) {
-      // Rolle anzeigen
-      roleDiv.innerText = players[currentTurn].role;
-      roleDiv.style.display = "block";
-      instruction.style.display = "none";
-      btn.innerText = "Rolle verbergen & Weitergeben";
-      isRevealed = true;
+    if (role.style.display === 'none' || role.style.display === '') {
+      role.style.display = 'inline';
+      hint.style.display = 'none';
+      box.style.borderColor = '#e94560';
     } else {
-      // Weiter zum nächsten Spieler
-      currentTurn++;
-      if (currentTurn < players.length) {
-        updateTurnUI();
-      } else {
-        showStep('step4');
-      }
+      role.style.display = 'none';
+      hint.style.display = 'inline';
+      box.style.borderColor = '#00adb5';
     }
   }
 
-  function showStep(stepId) {
-    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-    document.getElementById(stepId).classList.add('active');
-  }
+  // Initialisieren
+  updateTotal();
 </script>
 
 </body>
