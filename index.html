@@ -137,14 +137,16 @@
       border: 2px dashed #e94560;
       border-radius: 10px;
       padding: 20px;
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       font-weight: bold;
       color: #4ecca3;
       margin: 20px 0;
-      min-height: 80px;
+      min-height: 90px;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
+      gap: 5px;
     }
     .instruction {
       color: #aaa;
@@ -157,7 +159,6 @@
 <div class="container">
   <h1>🐺 Werwolf</h1>
 
-  <!-- Schritt 1: Spieleranzahl & Namen -->
   <div id="step1" class="card">
     <h2>1. Spieler eingeben</h2>
     <div class="player-count-control">
@@ -170,7 +171,6 @@
     <button class="primary-btn" onclick="goToStep2()">Weiter zur Rollenauswahl</button>
   </div>
 
-  <!-- Schritt 2: Rollen festlegen -->
   <div id="step2" class="card" style="display: none;">
     <h2>2. Rollen wählen</h2>
     <p id="target-count-info" style="text-align: center; color: #00adb5; font-weight: bold;"></p>
@@ -214,19 +214,42 @@
         <span class="slider"></span>
       </label>
     </div>
+    <div class="role-row">
+      <span>Dorfmatratze 💋</span>
+      <label class="switch">
+        <input type="checkbox" id="toggle-matratze" onchange="adjustVillageCount()">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="role-row">
+      <span>Dieb 🥷</span>
+      <label class="switch">
+        <input type="checkbox" id="toggle-dieb" onchange="adjustVillageCount()">
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <hr style="border: 0; border-top: 1px solid #333; margin: 15px 0;">
+
+    <div class="role-row" style="background: #253342;">
+      <span>Bürgermeister vergeben 🎖️</span>
+      <label class="switch">
+        <input type="checkbox" id="toggle-bm" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
 
     <p id="role-warning" style="text-align: center; color: #ff6b6b; font-size: 0.9rem;"></p>
     <button class="primary-btn" id="start-game-btn" onclick="startGame()">Spiel starten</button>
   </div>
 
-  <!-- Schritt 3: Pass & Play -->
   <div id="step3" class="card" style="display: none;">
     <div class="turn-box">
       <div class="instruction">Gib das Handy an:</div>
       <div class="player-name-title" id="current-player-name">Henri</div>
 
       <div class="secret-role-display" id="role-box">
-        <span id="role-text" style="display: none;"></span>
+        <div id="role-text" style="display: none;"></div>
         <span id="placeholder-text">❓ Rolle verdeckt</span>
       </div>
 
@@ -234,7 +257,6 @@
     </div>
   </div>
 
-  <!-- Schritt 4: Ende -->
   <div id="step4" class="card" style="display: none; text-align: center;">
     <h2>🎉 Alle Rollen sind verteilt!</h2>
     <p>Das Spiel kann jetzt beginnen. Viel Spaß!</p>
@@ -287,6 +309,8 @@
     let useHexe = playerCount >= 5;
     let useAmor = playerCount >= 7;
     let useJaeger = playerCount >= 8;
+    let useMatratze = false;
+    let useDieb = false;
 
     let specialCount = (useSeherin ? 1 : 0) + (useHexe ? 1 : 0) + (useAmor ? 1 : 0) + (useJaeger ? 1 : 0);
     let dorf = playerCount - wolves - specialCount;
@@ -298,6 +322,8 @@
     document.getElementById('toggle-hexe').checked = useHexe;
     document.getElementById('toggle-amor').checked = useAmor;
     document.getElementById('toggle-jaeger').checked = useJaeger;
+    document.getElementById('toggle-matratze').checked = useMatratze;
+    document.getElementById('toggle-dieb').checked = useDieb;
   }
 
   function adjustVillageCount() {
@@ -307,6 +333,8 @@
     if(document.getElementById('toggle-hexe').checked) specialCount++;
     if(document.getElementById('toggle-amor').checked) specialCount++;
     if(document.getElementById('toggle-jaeger').checked) specialCount++;
+    if(document.getElementById('toggle-matratze').checked) specialCount++;
+    if(document.getElementById('toggle-dieb').checked) specialCount++;
 
     let targetDorf = playerNames.length - wolves - specialCount;
     if (targetDorf < 0) targetDorf = 0;
@@ -336,6 +364,8 @@
     if(document.getElementById('toggle-hexe').checked) count++;
     if(document.getElementById('toggle-amor').checked) count++;
     if(document.getElementById('toggle-jaeger').checked) count++;
+    if(document.getElementById('toggle-matratze').checked) count++;
+    if(document.getElementById('toggle-dieb').checked) count++;
 
     const targetInfo = document.getElementById('target-count-info');
     const warning = document.getElementById('role-warning');
@@ -367,15 +397,25 @@
     if(document.getElementById('toggle-hexe').checked) rolesList.push('Hexe 🧪');
     if(document.getElementById('toggle-amor').checked) rolesList.push('Amor 💘');
     if(document.getElementById('toggle-jaeger').checked) rolesList.push('Jäger 🏹');
+    if(document.getElementById('toggle-matratze').checked) rolesList.push('Dorfmatratze 💋');
+    if(document.getElementById('toggle-dieb').checked) rolesList.push('Dieb 🥷');
 
+    // Mischen
     for (let i = rolesList.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [rolesList[i], rolesList[j]] = [rolesList[j], rolesList[i]];
     }
 
+    // Bürgermeister zufällig bestimmen
+    let bmIndex = -1;
+    if (document.getElementById('toggle-bm').checked) {
+      bmIndex = Math.floor(Math.random() * playerNames.length);
+    }
+
     gamePlayers = playerNames.map((name, index) => ({
       name: name,
-      role: rolesList[index]
+      role: rolesList[index],
+      isMayor: index === bmIndex
     }));
 
     currentTurnIndex = 0;
@@ -400,8 +440,15 @@
     const btn = document.getElementById('reveal-btn');
 
     if (!isCardRevealed) {
-      roleText.innerText = gamePlayers[currentTurnIndex].role;
-      roleText.style.display = 'inline';
+      const player = gamePlayers[currentTurnIndex];
+      let displayContent = `<span>${player.role}</span>`;
+      if (player.isMayor) {
+        displayContent += `<span style="font-size:1.1rem; color:#ffd700; margin-top:5px;">🎖️ Du bist zusätzlich Bürgermeister!</span>`;
+      }
+
+      roleText.innerHTML = displayContent;
+      roleText.style.display = 'flex';
+      roleText.style.flexDirection = 'column';
       placeholder.style.display = 'none';
       btn.innerText = 'Karte verdecken & Weitergeben';
       isCardRevealed = true;
