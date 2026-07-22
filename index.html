@@ -78,6 +78,26 @@
       border-radius: 10px;
       transition: opacity 0.2s;
     }
+    .role-title {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .info-btn {
+      background: #333;
+      border: 1px solid #00adb5;
+      color: #00adb5;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      cursor: pointer;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0;
+    }
     .role-row.disabled {
       opacity: 0.4;
     }
@@ -150,10 +170,6 @@
       margin: 0 0 5px 0;
       color: #00adb5;
       font-size: 0.95rem;
-    }
-    .pwa-box ol {
-      margin: 5px 0 0 0;
-      padding-left: 20px;
     }
 
     .turn-box {
@@ -230,6 +246,18 @@
       margin-left: 10px;
     }
 
+    .win-banner {
+      background: #4ecca3;
+      color: #121212;
+      padding: 15px;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 15px;
+      animation: pulse 1.5s infinite alternate;
+    }
+
     .night-tabs {
       display: flex;
       gap: 10px;
@@ -262,6 +290,36 @@
     .night-flow-list li {
       margin-bottom: 8px;
     }
+
+    /* Modal Pop-up Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      z-index: 1000;
+    }
+    .modal-card {
+      background: #252a34;
+      border: 2px solid #00adb5;
+      border-radius: 16px;
+      padding: 20px;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+    }
+    .modal-card h3 {
+      color: #00adb5;
+      margin-top: 0;
+    }
+    .modal-card p {
+      color: #ddd;
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
   </style>
 </head>
 <body>
@@ -272,7 +330,6 @@
   <!-- Schritt 1: Spieleranzahl & Namen -->
   <div id="step1" class="card">
     
-    <!-- PWA Installation Hinweis / Button -->
     <div id="pwa-ios-notice" class="pwa-box" style="display: none;">
       <h3>📲 Als App speichern (iOS)</h3>
       <span>Tippe unten auf das <b>Teilen-Symbol</b> ⎘ (oder ⇡) und wähle <b>"Zum Home-Bildschirm"</b> ➕.</span>
@@ -300,53 +357,94 @@
     <p id="target-count-info" style="text-align: center; color: #00adb5; font-weight: bold;"></p>
 
     <div class="role-row">
-      <span>Werwolf 🐺</span>
+      <div class="role-title">
+        <span>Werwolf 🐺</span>
+        <button class="info-btn" onclick="showRoleInfo('werwolf')">i</button>
+      </div>
       <input type="number" id="count-werwolf" value="2" min="0" onchange="adjustVillageCount()">
     </div>
+
     <div class="role-row">
-      <span>Dorfbewohner 👨‍🌾</span>
+      <div class="role-title">
+        <span>Dorfbewohner 👨‍🌾</span>
+        <button class="info-btn" onclick="showRoleInfo('dorfbewohner')">i</button>
+      </div>
       <input type="number" id="count-dorf" value="2" min="0" readonly style="background: #222; color: #aaa;">
     </div>
 
     <hr style="border: 0; border-top: 1px solid #333; margin: 15px 0;">
 
     <div class="role-row" id="row-seherin">
-      <span>Seherin 🔮</span>
+      <div class="role-title">
+        <span>Seherin 🔮</span>
+        <button class="info-btn" onclick="showRoleInfo('seherin')">i</button>
+      </div>
       <label class="switch">
         <input type="checkbox" id="toggle-seherin" checked onchange="adjustVillageCount()">
         <span class="slider"></span>
       </label>
     </div>
+
     <div class="role-row" id="row-hexe">
-      <span>Hexe 🧪</span>
+      <div class="role-title">
+        <span>Hexe 🧪</span>
+        <button class="info-btn" onclick="showRoleInfo('hexe')">i</button>
+      </div>
       <label class="switch">
         <input type="checkbox" id="toggle-hexe" checked onchange="adjustVillageCount()">
         <span class="slider"></span>
       </label>
     </div>
+
     <div class="role-row" id="row-amor">
-      <span>Amor 💘</span>
+      <div class="role-title">
+        <span>Amor 💘</span>
+        <button class="info-btn" onclick="showRoleInfo('amor')">i</button>
+      </div>
       <label class="switch">
         <input type="checkbox" id="toggle-amor" onchange="adjustVillageCount()">
         <span class="slider"></span>
       </label>
     </div>
+
     <div class="role-row" id="row-jaeger">
-      <span>Jäger 🏹</span>
+      <div class="role-title">
+        <span>Jäger 🏹</span>
+        <button class="info-btn" onclick="showRoleInfo('jaeger')">i</button>
+      </div>
       <label class="switch">
         <input type="checkbox" id="toggle-jaeger" onchange="adjustVillageCount()">
         <span class="slider"></span>
       </label>
     </div>
+
+    <div class="role-row" id="row-blinzeln">
+      <div class="role-title">
+        <span>Blinzelmädchen 👁️</span>
+        <button class="info-btn" onclick="showRoleInfo('blinzeln')">i</button>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="toggle-blinzeln" onchange="adjustVillageCount()">
+        <span class="slider"></span>
+      </label>
+    </div>
+
     <div class="role-row" id="row-matratze">
-      <span>Dorfmatratze 💋</span>
+      <div class="role-title">
+        <span>Dorfmatratze 💋</span>
+        <button class="info-btn" onclick="showRoleInfo('matratze')">i</button>
+      </div>
       <label class="switch">
         <input type="checkbox" id="toggle-matratze" onchange="adjustVillageCount()">
         <span class="slider"></span>
       </label>
     </div>
+
     <div class="role-row" id="row-dieb">
-      <span>Dieb 🥷</span>
+      <div class="role-title">
+        <span>Dieb 🥷</span>
+        <button class="info-btn" onclick="showRoleInfo('dieb')">i</button>
+      </div>
       <label class="switch">
         <input type="checkbox" id="toggle-dieb" onchange="adjustVillageCount()">
         <span class="slider"></span>
@@ -356,7 +454,10 @@
     <hr style="border: 0; border-top: 1px solid #333; margin: 15px 0;">
 
     <div class="role-row" style="background: #253342;">
-      <span>Bürgermeister vergeben 🎖️</span>
+      <div class="role-title">
+        <span>Bürgermeister vergeben 🎖️</span>
+        <button class="info-btn" onclick="showRoleInfo('buergermeister')">i</button>
+      </div>
       <label class="switch">
         <input type="checkbox" id="toggle-bm" checked>
         <span class="slider"></span>
@@ -385,6 +486,7 @@
   <!-- Schritt 4: Ende / Erzähler-Übersicht -->
   <div id="step4" class="card" style="display: none;">
     <h2>📜 Erzähler-Übersicht</h2>
+    <div id="win-banner-box"></div>
     <p style="text-align: center; color: #aaa; font-size: 0.85rem;">Gib das Handy dem Spielleiter. Klicke auf 💀 um Spieler als tot zu markieren.</p>
     
     <ul class="gm-list" id="gm-roles-list"></ul>
@@ -403,6 +505,15 @@
   </div>
 </div>
 
+<!-- Modal für Rollen-Infos -->
+<div id="info-modal" class="modal-overlay" style="display: none;">
+  <div class="modal-card">
+    <h3 id="modal-title">Rollen-Info</h3>
+    <p id="modal-text"></p>
+    <button class="secondary-btn" onclick="closeModal()">Schließen</button>
+  </div>
+</div>
+
 <script>
   let playerCount = 6;
   let playerNames = [];
@@ -412,9 +523,44 @@
   let activeNightTab = 1;
   let deferredPrompt;
 
-  const specialRoles = ['seherin', 'hexe', 'amor', 'jaeger', 'matratze', 'dieb'];
+  const specialRoles = ['seherin', 'hexe', 'amor', 'jaeger', 'blinzeln', 'matratze', 'dieb'];
 
-  // Erkennung für Home-Bildschirm Installation (PWA)
+  const roleDescriptions = {
+    werwolf: "Wacht nachts mit den anderen Werwölfen auf und versucht, das Dorf auszuschalten.",
+    dorfbewohner: "Hat keine Sonderfähigkeit, versucht tagsüber durch Diskussionen die Werwölfe zu entlarven.",
+    seherin: "Darf jede Nacht die genaue Rolle eines Mitspielers beim Erzähler erfragen.",
+    hexe: "Besitzt einen Heiltrank (rettet ein Opfer) und einen Gifttrank (tötet einen Spieler). Jeder Trank kann nur einmal pro Spiel genutzt werden.",
+    amor: "Wählt in der 1. Nacht zwei Spieler als Liebespaar. Stirbt einer von beiden, stirbt der andere sofort aus Liebeskummer mit.",
+    jaeger: "Wird der Jäger eliminiert, darf er im selben Moment noch einen Mitspieler mit in den Tod reißen.",
+    blinzeln: "Darf nachts heimlich die Augen ein wenig öffnen, um die Werwölfe zu erspähen – muss aber aufpassen, nicht entdeckt zu werden!",
+    matratze: "Wählt jede Nacht einen Partner. Wird die Dorfmatratze angegriffen, stirbt stattdessen ihr gewählter Partner.",
+    dieb: "Darf in der 1. Nacht mit einem beliebigen Mitspieler die Rolle tauschen. Der Getauschte wird automatisch zum Dorfbewohner.",
+    buergermeister: "Wird zusätzlich vergeben. Die Stimme des Bürgermeisters zählt bei Unentschieden doppelt!"
+  };
+
+  function showRoleInfo(roleKey) {
+    const titleMap = {
+      werwolf: "Werwolf 🐺",
+      dorfbewohner: "Dorfbewohner 👨‍🌾",
+      seherin: "Seherin 🔮",
+      hexe: "Hexe 🧪",
+      amor: "Amor 💘",
+      jaeger: "Jäger 🏹",
+      blinzeln: "Blinzelmädchen 👁️",
+      matratze: "Dorfmatratze 💋",
+      dieb: "Dieb 🥷",
+      buergermeister: "Bürgermeister 🎖️"
+    };
+
+    document.getElementById('modal-title').innerText = titleMap[roleKey];
+    document.getElementById('modal-text').innerText = roleDescriptions[roleKey];
+    document.getElementById('info-modal').style.display = 'flex';
+  }
+
+  function closeModal() {
+    document.getElementById('info-modal').style.display = 'none';
+  }
+
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
@@ -438,11 +584,8 @@
     const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
     const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
 
-    // Nur anzeigen wenn nicht schon als Web-App geöffnet
-    if (!isStandalone) {
-      if (isIOS) {
-        document.getElementById('pwa-ios-notice').style.display = 'block';
-      }
+    if (!isStandalone && isIOS) {
+      document.getElementById('pwa-ios-notice').style.display = 'block';
     }
   }
 
@@ -490,6 +633,7 @@
     document.getElementById('toggle-hexe').checked = useHexe;
     document.getElementById('toggle-amor').checked = useAmor;
     document.getElementById('toggle-jaeger').checked = useJaeger;
+    document.getElementById('toggle-blinzeln').checked = false;
     document.getElementById('toggle-matratze').checked = false;
     document.getElementById('toggle-dieb').checked = false;
   }
@@ -575,16 +719,15 @@
     if(document.getElementById('toggle-hexe').checked) rolesList.push('Hexe 🧪');
     if(document.getElementById('toggle-amor').checked) rolesList.push('Amor 💘');
     if(document.getElementById('toggle-jaeger').checked) rolesList.push('Jäger 🏹');
+    if(document.getElementById('toggle-blinzeln').checked) rolesList.push('Blinzelmädchen 👁️');
     if(document.getElementById('toggle-matratze').checked) rolesList.push('Dorfmatratze 💋');
     if(document.getElementById('toggle-dieb').checked) rolesList.push('Dieb 🥷');
 
-    // Mischen
     for (let i = rolesList.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [rolesList[i], rolesList[j]] = [rolesList[j], rolesList[i]];
     }
 
-    // Bürgermeister zufällig bestimmen
     let bmIndex = -1;
     if (document.getElementById('toggle-bm').checked) {
       bmIndex = Math.floor(Math.random() * playerNames.length);
@@ -646,6 +789,26 @@
     renderGMScreen();
   }
 
+  function checkWinCondition() {
+    const alivePlayers = gamePlayers.filter(p => !p.isDead);
+    const aliveWolves = alivePlayers.filter(p => p.role.includes('Werwolf'));
+    const aliveVillagers = alivePlayers.filter(p => !p.role.includes('Werwolf'));
+
+    const bannerBox = document.getElementById('win-banner-box');
+
+    if (alivePlayers.length > 0) {
+      if (aliveWolves.length === 0) {
+        bannerBox.innerHTML = `<div class="win-banner">🎉 Das Dorf hat gewonnen! Alle Werwölfe wurden eliminiert.</div>`;
+      } else if (aliveWolves.length >= aliveVillagers.length) {
+        bannerBox.innerHTML = `<div class="win-banner" style="background:#e94560; color:white;">🐺 Die Werwölfe haben gewonnen! Sie haben die Überzahl erreicht.</div>`;
+      } else {
+        bannerBox.innerHTML = '';
+      }
+    } else {
+      bannerBox.innerHTML = '';
+    }
+  }
+
   function switchNightTab(nightNumber) {
     activeNightTab = nightNumber;
     document.getElementById('tab-night1').classList.toggle('active', nightNumber === 1);
@@ -661,7 +824,6 @@
     steps.push('<b>Alle Spieler schließen die Augen.</b>');
 
     if (activeNightTab === 1) {
-      // 1. Nacht Spezialeigenschaften
       if(document.getElementById('toggle-dieb').checked) {
         steps.push('<b>Dieb 🥷</b> wacht auf und zeigt auf eine Person, mit der er die Rolle tauschen möchte. Der Erzähler teilt dem Dieb leise seine neue Rolle mit. Danach teilt der Erzähler der getauschten Person leise mit, dass sie ab jetzt <b>Dorfbewohner</b> ist. Die Karte Dieb ist damit komplett aus dem Spiel.');
       }
@@ -671,12 +833,15 @@
       }
     }
 
-    // Rollen, die jede Nacht aufwachen
     if(document.getElementById('toggle-matratze').checked) {
       steps.push('<b>Dorfmatratze 💋</b> wacht auf und wählt einen Partner für die Nacht.');
     }
     if(parseInt(document.getElementById('count-werwolf').value) > 0) {
-      steps.push('<b>Werwölfe 🐺</b> wachen auf, einigen sich leise und wählen ein Opfer.');
+      let wolfStep = '<b>Werwölfe 🐺</b> wachen auf, einigen sich leise und wählen ein Opfer.';
+      if(document.getElementById('toggle-blinzeln').checked) {
+        wolfStep += ' <i>(Das Blinzelmädchen 👁️ darf heimlich blinzeln!)</i>';
+      }
+      steps.push(wolfStep);
     }
     if(document.getElementById('toggle-seherin').checked) {
       steps.push('<b>Seherin 🔮</b> wacht auf, zeigt auf 1 Spieler und sieht dessen Rolle.');
@@ -715,13 +880,13 @@
       list.appendChild(li);
     });
 
+    checkWinCondition();
     renderNightFlow();
 
     document.getElementById('step3').style.display = 'none';
     document.getElementById('step4').style.display = 'block';
   }
 
-  // Startup Init
   renderPlayerInputs();
   checkDeviceOS();
 </script>
