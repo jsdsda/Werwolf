@@ -162,7 +162,6 @@
       list-style: none;
       padding: 0;
       margin: 15px 0;
-      text-align: left;
     }
     .gm-item {
       display: flex;
@@ -172,6 +171,14 @@
       padding: 10px 14px;
       border-radius: 8px;
       margin-bottom: 8px;
+      transition: background 0.2s;
+    }
+    .gm-item.dead {
+      background: #1a1a1a;
+      opacity: 0.5;
+    }
+    .gm-item.dead .gm-name, .gm-item.dead .gm-role {
+      text-decoration: line-through;
     }
     .gm-name {
       font-weight: bold;
@@ -180,6 +187,27 @@
     .gm-role {
       font-weight: bold;
       color: #4ecca3;
+    }
+    .btn-kill {
+      background: #333;
+      border: 1px solid #555;
+      border-radius: 6px;
+      cursor: pointer;
+      padding: 4px 8px;
+      font-size: 1.1rem;
+      margin-left: 10px;
+    }
+
+    .night-flow-list {
+      background: #181920;
+      border-radius: 10px;
+      padding: 12px 15px 12px 30px;
+      margin-top: 15px;
+      font-size: 0.95rem;
+      color: #ddd;
+    }
+    .night-flow-list li {
+      margin-bottom: 6px;
     }
   </style>
 </head>
@@ -292,9 +320,14 @@
   <!-- Schritt 4: Ende / Erzähler-Übersicht -->
   <div id="step4" class="card" style="display: none;">
     <h2>📜 Erzähler-Übersicht</h2>
-    <p style="text-align: center; color: #aaa; font-size: 0.9rem;">Gib das Handy jetzt dem Spielleiter. Hier ist die Übersicht aller Rollen:</p>
+    <p style="text-align: center; color: #aaa; font-size: 0.85rem;">Gib das Handy dem Spielleiter. Klicke auf 💀 um Spieler als tot zu markieren.</p>
     
     <ul class="gm-list" id="gm-roles-list"></ul>
+
+    <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;">
+
+    <h2>🌙 Nacht-Ablauf</h2>
+    <ol class="night-flow-list" id="night-flow-list"></ol>
 
     <button class="primary-btn" onclick="location.reload()">Neues Spiel starten</button>
   </div>
@@ -456,7 +489,8 @@
     gamePlayers = playerNames.map((name, index) => ({
       name: name,
       role: rolesList[index],
-      isMayor: index === bmIndex
+      isMayor: index === bmIndex,
+      isDead: false
     }));
 
     currentTurnIndex = 0;
@@ -503,19 +537,52 @@
     }
   }
 
+  function toggleKill(index) {
+    gamePlayers[index].isDead = !gamePlayers[index].isDead;
+    renderGMScreen();
+  }
+
   function renderGMScreen() {
     const list = document.getElementById('gm-roles-list');
     list.innerHTML = '';
 
-    gamePlayers.forEach(p => {
+    gamePlayers.forEach((p, idx) => {
       const li = document.createElement('li');
-      li.className = 'gm-item';
+      li.className = `gm-item ${p.isDead ? 'dead' : ''}`;
       
       let roleInfo = p.role;
-      if (p.isMayor) roleInfo += ' 🎖️ (Bürgermeister)';
+      if (p.isMayor) roleInfo += ' 🎖️';
 
-      li.innerHTML = `<span class="gm-name">${p.name}</span> <span class="gm-role">${roleInfo}</span>`;
+      li.innerHTML = `
+        <div>
+          <span class="gm-name">${p.name}</span>: 
+          <span class="gm-role">${roleInfo}</span>
+        </div>
+        <button class="btn-kill" onclick="toggleKill(${idx})">${p.isDead ? '🔄' : '💀'}</button>
+      `;
       list.appendChild(li);
+    });
+
+    // Nacht-Ablauf dynamisch generieren
+    const flowList = document.getElementById('night-flow-list');
+    flowList.innerHTML = '';
+
+    const steps = [];
+    steps.push('<b>Alle Spieler schließen die Augen.</b>');
+    
+    if(document.getElementById('toggle-dieb').checked) steps.push('<b>Dieb 🥷</b> wacht auf (nur 1. Nacht) und darf wählen.');
+    if(document.getElementById('toggle-amor').checked) steps.push('<b>Amor 💘</b> wacht auf (nur 1. Nacht) und bestimmt das Liebespaar.');
+    if(document.getElementById('toggle-matratze').checked) steps.push('<b>Dorfmatratze 💋</b> wacht auf und wählt einen Übernachtungspartner.');
+    if(parseInt(document.getElementById('count-werwolf').value) > 0) steps.push('<b>Werwölfe 🐺</b> wachen auf und wählen ein Opfer.');
+    if(document.getElementById('toggle-seherin').checked) steps.push('<b>Seherin 🔮</b> wacht auf und sieht eine Rolle.');
+    if(document.getElementById('toggle-hexe').checked) steps.push('<b>Hexe 🧪</b> wacht auf (Opfer zeigen, Tränke nutzen).');
+
+    steps.push('<b>Alle wachen auf!</b> Der Erzähler verkündet die Ereignisse der Nacht.');
+
+    steps.forEach(step => {
+      const li = document.createElement('li');
+      li.innerHTML = step;
+      flowList.appendChild(li);
     });
 
     document.getElementById('step3').style.display = 'none';
