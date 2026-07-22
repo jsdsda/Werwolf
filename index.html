@@ -177,7 +177,7 @@
 
     <div class="role-row">
       <span>Werwolf 🐺</span>
-      <input type="number" id="count-werwolf" value="2" min="0" onchange="updateRoleTotal()">
+      <input type="number" id="count-werwolf" value="2" min="0" onchange="adjustVillageCount()">
     </div>
     <div class="role-row">
       <span>Dorfbewohner 👨‍🌾</span>
@@ -189,28 +189,28 @@
     <div class="role-row">
       <span>Seherin 🔮</span>
       <label class="switch">
-        <input type="checkbox" id="toggle-seherin" checked onchange="updateRoleTotal()">
+        <input type="checkbox" id="toggle-seherin" checked onchange="adjustVillageCount()">
         <span class="slider"></span>
       </label>
     </div>
     <div class="role-row">
       <span>Hexe 🧪</span>
       <label class="switch">
-        <input type="checkbox" id="toggle-hexe" checked onchange="updateRoleTotal()">
+        <input type="checkbox" id="toggle-hexe" checked onchange="adjustVillageCount()">
         <span class="slider"></span>
       </label>
     </div>
     <div class="role-row">
       <span>Amor 💘</span>
       <label class="switch">
-        <input type="checkbox" id="toggle-amor" onchange="updateRoleTotal()">
+        <input type="checkbox" id="toggle-amor" onchange="adjustVillageCount()">
         <span class="slider"></span>
       </label>
     </div>
     <div class="role-row">
       <span>Jäger 🏹</span>
       <label class="switch">
-        <input type="checkbox" id="toggle-jaeger" onchange="updateRoleTotal()">
+        <input type="checkbox" id="toggle-jaeger" onchange="adjustVillageCount()">
         <span class="slider"></span>
       </label>
     </div>
@@ -290,7 +290,7 @@
 
     let specialCount = (useSeherin ? 1 : 0) + (useHexe ? 1 : 0) + (useAmor ? 1 : 0) + (useJaeger ? 1 : 0);
     let dorf = playerCount - wolves - specialCount;
-    if (dorf < 1) dorf = 1;
+    if (dorf < 0) dorf = 0;
 
     document.getElementById('count-werwolf').value = wolves;
     document.getElementById('count-dorf').value = dorf;
@@ -298,6 +298,21 @@
     document.getElementById('toggle-hexe').checked = useHexe;
     document.getElementById('toggle-amor').checked = useAmor;
     document.getElementById('toggle-jaeger').checked = useJaeger;
+  }
+
+  function adjustVillageCount() {
+    let wolves = parseInt(document.getElementById('count-werwolf').value) || 0;
+    let specialCount = 0;
+    if(document.getElementById('toggle-seherin').checked) specialCount++;
+    if(document.getElementById('toggle-hexe').checked) specialCount++;
+    if(document.getElementById('toggle-amor').checked) specialCount++;
+    if(document.getElementById('toggle-jaeger').checked) specialCount++;
+
+    let targetDorf = playerNames.length - wolves - specialCount;
+    if (targetDorf < 0) targetDorf = 0;
+
+    document.getElementById('count-dorf').value = targetDorf;
+    updateRoleTotal();
   }
 
   function goToStep2() {
@@ -310,7 +325,7 @@
 
     document.getElementById('step1').style.display = 'none';
     document.getElementById('step2').style.display = 'block';
-    updateRoleTotal();
+    adjustVillageCount();
   }
 
   function updateRoleTotal() {
