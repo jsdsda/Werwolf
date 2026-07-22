@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Werwolf Online</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #1a1a2e;
+      color: #e0e0e0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    h1 {
+      color: #e94560;
+    }
+    .card {
+      background: #16213e;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+    }
+    input, button {
+      padding: 10px;
+      margin: 10px 0;
+      width: 80%;
+      border-radius: 5px;
+      border: none;
+    }
+    button {
+      background-color: #e94560;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0f3460;
+    }
+    .role-box {
+      margin-top: 20px;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1>🐺 Werwolf Online</h1>
+    <p>Gib deinen Namen ein, um deine Rolle zu ziehen:</p>
+    
+    <input type="text" id="playerName" placeholder="Dein Name..." />
+    <br>
+    <button onclick="drawRole()">Rolle ziehen</button>
+
+    <div class="role-box" id="result"></div>
+  </div>
+
+  <script>
+    const roles = ["Werwolf 🐺", "Dorfbewohner 👨‍🌾", "Seherin 🔮", "Hexe 🧪", "Amor 💘"];
+
+    function drawRole() {
+      const name = document.getElementById('playerName').value.trim();
+      const resultDiv = document.getElementById('result');
+
+      if (!name) {
+        resultDiv.innerHTML = "<span style='color: #ff6b6b;'>Bitte gib zuerst deinen Namen ein!</span>";
+        return;
+      }
+
+      const randomRole = roles[Math.floor(Math.random() * roles.length)];
+      resultDiv.innerHTML = `Hallo <strong>${name}</strong>, deine Rolle ist:<br><br><span style="color: #4ecca3; font-size: 1.5rem;">${randomRole}</span>`;
+    }
+  </script>
+
+</body>
+</html>
