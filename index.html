@@ -157,6 +157,30 @@
       color: #aaa;
       font-size: 0.95rem;
     }
+
+    .gm-list {
+      list-style: none;
+      padding: 0;
+      margin: 15px 0;
+      text-align: left;
+    }
+    .gm-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #2a2a2a;
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+    .gm-name {
+      font-weight: bold;
+      color: #00adb5;
+    }
+    .gm-role {
+      font-weight: bold;
+      color: #4ecca3;
+    }
   </style>
 </head>
 <body>
@@ -265,10 +289,13 @@
     </div>
   </div>
 
-  <!-- Schritt 4: Ende -->
-  <div id="step4" class="card" style="display: none; text-align: center;">
-    <h2>🎉 Alle Rollen sind verteilt!</h2>
-    <p>Das Spiel kann jetzt beginnen. Viel Spaß!</p>
+  <!-- Schritt 4: Ende / Erzähler-Übersicht -->
+  <div id="step4" class="card" style="display: none;">
+    <h2>📜 Erzähler-Übersicht</h2>
+    <p style="text-align: center; color: #aaa; font-size: 0.9rem;">Gib das Handy jetzt dem Spielleiter. Hier ist die Übersicht aller Rollen:</p>
+    
+    <ul class="gm-list" id="gm-roles-list"></ul>
+
     <button class="primary-btn" onclick="location.reload()">Neues Spiel starten</button>
   </div>
 </div>
@@ -343,7 +370,6 @@
 
     document.getElementById('count-dorf').value = targetDorf;
 
-    // Inaktive Schalter deaktivieren, wenn 0 Dorfbewohner da sind
     specialRoles.forEach(role => {
       const toggle = document.getElementById(`toggle-${role}`);
       const row = document.getElementById(`row-${role}`);
@@ -472,10 +498,28 @@
       if (currentTurnIndex < gamePlayers.length) {
         setupTurnUI();
       } else {
-        document.getElementById('step3').style.display = 'none';
-        document.getElementById('step4').style.display = 'block';
+        renderGMScreen();
       }
     }
+  }
+
+  function renderGMScreen() {
+    const list = document.getElementById('gm-roles-list');
+    list.innerHTML = '';
+
+    gamePlayers.forEach(p => {
+      const li = document.createElement('li');
+      li.className = 'gm-item';
+      
+      let roleInfo = p.role;
+      if (p.isMayor) roleInfo += ' 🎖️ (Bürgermeister)';
+
+      li.innerHTML = `<span class="gm-name">${p.name}</span> <span class="gm-role">${roleInfo}</span>`;
+      list.appendChild(li);
+    });
+
+    document.getElementById('step3').style.display = 'none';
+    document.getElementById('step4').style.display = 'block';
   }
 
   renderPlayerInputs();
