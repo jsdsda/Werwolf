@@ -198,16 +198,37 @@
       margin-left: 10px;
     }
 
+    .night-tabs {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .night-tab-btn {
+      flex: 1;
+      padding: 8px;
+      background: #2a2a2a;
+      border: 1px solid #444;
+      color: #aaa;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .night-tab-btn.active {
+      background: #00adb5;
+      color: white;
+      border-color: #00adb5;
+    }
+
     .night-flow-list {
       background: #181920;
       border-radius: 10px;
       padding: 12px 15px 12px 30px;
-      margin-top: 15px;
+      margin-top: 10px;
       font-size: 0.95rem;
       color: #ddd;
     }
     .night-flow-list li {
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
   </style>
 </head>
@@ -327,6 +348,11 @@
     <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;">
 
     <h2>🌙 Nacht-Ablauf</h2>
+    <div class="night-tabs">
+      <button class="night-tab-btn active" id="tab-night1" onclick="switchNightTab(1)">1. Nacht</button>
+      <button class="night-tab-btn" id="tab-night2" onclick="switchNightTab(2)">2.+ Nacht</button>
+    </div>
+
     <ol class="night-flow-list" id="night-flow-list"></ol>
 
     <button class="primary-btn" onclick="location.reload()">Neues Spiel starten</button>
@@ -339,6 +365,7 @@
   let gamePlayers = [];
   let currentTurnIndex = 0;
   let isCardRevealed = false;
+  let activeNightTab = 1;
 
   const specialRoles = ['seherin', 'hexe', 'amor', 'jaeger', 'matratze', 'dieb'];
 
@@ -542,6 +569,54 @@
     renderGMScreen();
   }
 
+  function switchNightTab(nightNumber) {
+    activeNightTab = nightNumber;
+    document.getElementById('tab-night1').classList.toggle('active', nightNumber === 1);
+    document.getElementById('tab-night2').classList.toggle('active', nightNumber === 2);
+    renderNightFlow();
+  }
+
+  function renderNightFlow() {
+    const flowList = document.getElementById('night-flow-list');
+    flowList.innerHTML = '';
+
+    const steps = [];
+    steps.push('<b>Alle Spieler schließen die Augen.</b>');
+
+    if (activeNightTab === 1) {
+      // 1. Nacht Spezialeigenschaften
+      if(document.getElementById('toggle-dieb').checked) {
+        steps.push('<b>Dieb 🥷</b> wacht auf, sieht ggf. Extrakarten und tauscht Rolle.');
+      }
+      if(document.getElementById('toggle-amor').checked) {
+        steps.push('<b>Amor 💘</b> wacht auf und wählt 2 Spieler als <i>Liebespaar</i>.');
+        steps.push('<b>Amor 💘</b> schläft ein. Das <b>Liebespaar</b> wacht auf und blickt sich an.');
+      }
+    }
+
+    // Rollen, die jede Nacht aufwachen
+    if(document.getElementById('toggle-matratze').checked) {
+      steps.push('<b>Dorfmatratze 💋</b> wacht auf und wählt einen Partner für die Nacht.');
+    }
+    if(parseInt(document.getElementById('count-werwolf').value) > 0) {
+      steps.push('<b>Werwölfe 🐺</b> wachen auf, einigen sich leise und wählen ein Opfer.');
+    }
+    if(document.getElementById('toggle-seherin').checked) {
+      steps.push('<b>Seherin 🔮</b> wacht auf, zeigt auf 1 Spieler und sieht dessen Rolle.');
+    }
+    if(document.getElementById('toggle-hexe').checked) {
+      steps.push('<b>Hexe 🧪</b> wacht auf: Erzähler zeigt Opfer. Sie kann mit Heil- oder Gifttrank reagieren.');
+    }
+
+    steps.push('<b>Alle wachen auf!</b> Der Erzähler verkündet, wer gestorben ist.');
+
+    steps.forEach(step => {
+      const li = document.createElement('li');
+      li.innerHTML = step;
+      flowList.appendChild(li);
+    });
+  }
+
   function renderGMScreen() {
     const list = document.getElementById('gm-roles-list');
     list.innerHTML = '';
@@ -563,27 +638,7 @@
       list.appendChild(li);
     });
 
-    // Nacht-Ablauf dynamisch generieren
-    const flowList = document.getElementById('night-flow-list');
-    flowList.innerHTML = '';
-
-    const steps = [];
-    steps.push('<b>Alle Spieler schließen die Augen.</b>');
-    
-    if(document.getElementById('toggle-dieb').checked) steps.push('<b>Dieb 🥷</b> wacht auf (nur 1. Nacht) und darf wählen.');
-    if(document.getElementById('toggle-amor').checked) steps.push('<b>Amor 💘</b> wacht auf (nur 1. Nacht) und bestimmt das Liebespaar.');
-    if(document.getElementById('toggle-matratze').checked) steps.push('<b>Dorfmatratze 💋</b> wacht auf und wählt einen Übernachtungspartner.');
-    if(parseInt(document.getElementById('count-werwolf').value) > 0) steps.push('<b>Werwölfe 🐺</b> wachen auf und wählen ein Opfer.');
-    if(document.getElementById('toggle-seherin').checked) steps.push('<b>Seherin 🔮</b> wacht auf und sieht eine Rolle.');
-    if(document.getElementById('toggle-hexe').checked) steps.push('<b>Hexe 🧪</b> wacht auf (Opfer zeigen, Tränke nutzen).');
-
-    steps.push('<b>Alle wachen auf!</b> Der Erzähler verkündet die Ereignisse der Nacht.');
-
-    steps.forEach(step => {
-      const li = document.createElement('li');
-      li.innerHTML = step;
-      flowList.appendChild(li);
-    });
+    renderNightFlow();
 
     document.getElementById('step3').style.display = 'none';
     document.getElementById('step4').style.display = 'block';
