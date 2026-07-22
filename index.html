@@ -124,6 +124,38 @@
       margin-top: 15px;
     }
 
+    button.secondary-btn {
+      background-color: #00adb5;
+      color: white;
+      border: none;
+      padding: 12px;
+      font-size: 0.95rem;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .pwa-box {
+      background: #252a34;
+      border: 1px dashed #00adb5;
+      border-radius: 12px;
+      padding: 12px 15px;
+      margin-bottom: 20px;
+      font-size: 0.85rem;
+      color: #ccc;
+    }
+    .pwa-box h3 {
+      margin: 0 0 5px 0;
+      color: #00adb5;
+      font-size: 0.95rem;
+    }
+    .pwa-box ol {
+      margin: 5px 0 0 0;
+      padding-left: 20px;
+    }
+
     .turn-box {
       background: #252a34;
       border-radius: 12px;
@@ -239,6 +271,18 @@
 
   <!-- Schritt 1: Spieleranzahl & Namen -->
   <div id="step1" class="card">
+    
+    <!-- PWA Installation Hinweis / Button -->
+    <div id="pwa-ios-notice" class="pwa-box" style="display: none;">
+      <h3>📲 Als App speichern (iOS)</h3>
+      <span>Tippe unten auf das <b>Teilen-Symbol</b> ⎘ (oder ⇡) und wähle <b>"Zum Home-Bildschirm"</b> ➕.</span>
+    </div>
+
+    <div id="pwa-android-notice" class="pwa-box" style="display: none;">
+      <h3>📲 Als App speichern</h3>
+      <button class="secondary-btn" id="install-android-btn" onclick="installAndroidApp()">📱 Zum Home-Bildschirm hinzufügen</button>
+    </div>
+
     <h2>1. Spieler eingeben</h2>
     <div class="player-count-control">
       <button class="btn-counter" onclick="changePlayerCount(-1)">-</button>
@@ -366,8 +410,41 @@
   let currentTurnIndex = 0;
   let isCardRevealed = false;
   let activeNightTab = 1;
+  let deferredPrompt;
 
   const specialRoles = ['seherin', 'hexe', 'amor', 'jaeger', 'matratze', 'dieb'];
+
+  // Erkennung für Home-Bildschirm Installation (PWA)
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    document.getElementById('pwa-android-notice').style.display = 'block';
+  });
+
+  function installAndroidApp() {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          document.getElementById('pwa-android-notice').style.display = 'none';
+        }
+        deferredPrompt = null;
+      });
+    }
+  }
+
+  function checkDeviceOS() {
+    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+    const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+
+    // Nur anzeigen wenn nicht schon als Web-App geöffnet
+    if (!isStandalone) {
+      if (isIOS) {
+        document.getElementById('pwa-ios-notice').style.display = 'block';
+      }
+    }
+  }
 
   function renderPlayerInputs() {
     const container = document.getElementById('player-inputs');
@@ -644,7 +721,9 @@
     document.getElementById('step4').style.display = 'block';
   }
 
+  // Startup Init
   renderPlayerInputs();
+  checkDeviceOS();
 </script>
 
 </body>
