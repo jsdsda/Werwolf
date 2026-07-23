@@ -246,17 +246,6 @@
     }
     .night-flow-list li { margin-bottom: 8px; }
 
-    .timer-box {
-      background: rgba(0,0,0,0.3); border: 1px solid var(--border-color);
-      border-radius: 12px; padding: 12px; text-align: center; margin-bottom: 15px;
-    }
-    .timer-display { font-size: 1.8rem; font-weight: bold; color: var(--accent-teal); margin: 5px 0; }
-    .timer-controls { display: flex; gap: 8px; justify-content: center; }
-    .timer-btn {
-      background: var(--border-color); border: none; color: white;
-      padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem;
-    }
-
     .modal-overlay {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0,0,0,0.85);
@@ -398,18 +387,6 @@
     <h2>📜 Erzähler-Übersicht</h2>
     <div id="win-banner-box"></div>
 
-    <!-- Timer Widget -->
-    <div class="timer-box">
-      <div style="font-size: 0.85rem; color: var(--text-muted);">⏱️ Tagesdiskussion Timer</div>
-      <div class="timer-display" id="timer-display">05:00</div>
-      <div class="timer-controls">
-        <button class="timer-btn" onclick="setTimer(180)">3 Min</button>
-        <button class="timer-btn" onclick="setTimer(300)">5 Min</button>
-        <button class="timer-btn" onclick="setTimer(600)">10 Min</button>
-        <button class="timer-btn" style="background: var(--accent-teal);" id="timer-start-btn" onclick="toggleTimer()">Start</button>
-      </div>
-    </div>
-
     <p id="mayor-hint" style="text-align: center; color: var(--text-muted); font-size: 0.85rem;"></p>
     
     <h3 style="color: var(--accent-teal); font-size: 1rem; margin-bottom: 5px;">Lebende Spieler</h3>
@@ -488,11 +465,6 @@
   let activeNightTab = 1;
   let thiefPlayerIndex = -1;
   let useMayor = true;
-
-  // Timer Variables
-  let timerInterval = null;
-  let timerSeconds = 300;
-  let isTimerRunning = false;
 
   const specialRoles = ['seherin', 'hexe', 'amor', 'jaeger', 'blinzeln', 'matratze', 'dieb'];
 
@@ -896,43 +868,6 @@
     } else {
       bannerBox.innerHTML = '';
     }
-  }
-
-  // --- Timer Logik ---
-  function setTimer(sec) {
-    clearInterval(timerInterval);
-    isTimerRunning = false;
-    timerSeconds = sec;
-    document.getElementById('timer-start-btn').innerText = 'Start';
-    updateTimerDisplay();
-  }
-
-  function toggleTimer() {
-    if (isTimerRunning) {
-      clearInterval(timerInterval);
-      isTimerRunning = false;
-      document.getElementById('timer-start-btn').innerText = 'Start';
-    } else {
-      isTimerRunning = true;
-      document.getElementById('timer-start-btn').innerText = 'Pause';
-      timerInterval = setInterval(() => {
-        if (timerSeconds > 0) {
-          timerSeconds--;
-          updateTimerDisplay();
-        } else {
-          clearInterval(timerInterval);
-          isTimerRunning = false;
-          document.getElementById('timer-start-btn').innerText = 'Start';
-          alert('⏱️ Die Diskussionzeit ist abgelaufen!');
-        }
-      }, 1000);
-    }
-  }
-
-  function updateTimerDisplay() {
-    const m = Math.floor(timerSeconds / 60).toString().padStart(2, '0');
-    const s = (timerSeconds % 60).toString().padStart(2, '0');
-    document.getElementById('timer-display').innerText = `${m}:${s}`;
   }
 
   // --- Dieb Modal & Helpers ---
