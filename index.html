@@ -195,7 +195,7 @@
       cursor: grab;
       touch-action: none;
       user-select: none;
-      transition: transform 0.1s ease-out;
+      transition: transform 0.2s ease-out;
       box-shadow: 0 8px 20px rgba(0,0,0,0.6);
     }
     .swipe-card:active { cursor: grabbing; }
@@ -374,12 +374,12 @@
         <div style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 5px;">Gehört zu:</div>
         <div style="font-size: 1.8rem; font-weight: bold; color: var(--accent-teal);" id="card-player-name">Spieler</div>
         <div style="margin-top: 25px; font-size: 0.8rem; color: var(--accent-red); text-transform: uppercase; letter-spacing: 1px; font-weight: bold;">
-          👆 Ziehe die Karte nach oben
+          👆 Ziehe & halte die Karte nach oben
         </div>
       </div>
     </div>
 
-    <button class="primary-btn" id="next-turn-btn" onclick="nextPlayerTurn()" style="display: none;">Rolle verdeckt & weitergeben</button>
+    <button class="primary-btn" id="next-turn-btn" onclick="nextPlayerTurn()" style="display: none;">Nächster Spieler</button>
   </div>
 
   <!-- Schritt 4: Ende / Erzähler-Übersicht -->
@@ -689,10 +689,9 @@
     card.style.transition = 'transform 0.2s ease-out';
   }
 
-  // Drag Gesture Handlers
+  // Drag Gesture Handlers - "Hold to View / Release to Cover"
   const card = document.getElementById('swipe-card');
   let startY = 0;
-  let currentY = 0;
   let isDragging = false;
 
   card.addEventListener('mousedown', dragStart);
@@ -716,24 +715,20 @@
     const deltaY = clientY - startY;
 
     if (deltaY < 0 && deltaY > -240) {
-      currentY = deltaY;
-      card.style.transform = `translateY(${currentY}px)`;
+      card.style.transform = `translateY(${deltaY}px)`;
+      if (deltaY < -100) {
+        document.getElementById('next-turn-btn').style.display = 'block';
+      }
     }
   }
 
   function dragEnd() {
     if (!isDragging) return;
     isDragging = false;
-    card.style.transition = 'transform 0.2s ease-out';
-
-    if (currentY < -120) {
-      card.style.transform = 'translateY(-230px)';
-      document.getElementById('next-turn-btn').style.display = 'block';
-    } else {
-      card.style.transform = 'translateY(0px)';
-      document.getElementById('next-turn-btn').style.display = 'none';
-    }
-    currentY = 0;
+    
+    // Sobald man loslässt: Karte saust sofort wieder nach unten!
+    card.style.transition = 'transform 0.25s ease-out';
+    card.style.transform = 'translateY(0px)';
   }
 
   function nextPlayerTurn() {
