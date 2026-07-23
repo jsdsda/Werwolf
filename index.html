@@ -57,7 +57,7 @@
       text-align: center;
     }
 
-    input[type="text"], input[type="number"] {
+    input[type="text"], input[type="number"], select {
       padding: 10px;
       border-radius: 8px;
       border: 1px solid #444;
@@ -129,7 +129,6 @@
     }
     input:checked + .slider { background-color: #00adb5; }
     input:checked + .slider:before { transform: translateX(22px); }
-    input:disabled + .slider { cursor: not-allowed; }
 
     button.primary-btn {
       background-color: #e94560;
@@ -166,11 +165,7 @@
       font-size: 0.85rem;
       color: #ccc;
     }
-    .pwa-box h3 {
-      margin: 0 0 5px 0;
-      color: #00adb5;
-      font-size: 0.95rem;
-    }
+    .pwa-box h3 { margin: 0 0 5px 0; color: #00adb5; font-size: 0.95rem; }
 
     .turn-box {
       background: #252a34;
@@ -201,16 +196,9 @@
       align-items: center;
       gap: 5px;
     }
-    .instruction {
-      color: #aaa;
-      font-size: 0.95rem;
-    }
+    .instruction { color: #aaa; font-size: 0.95rem; }
 
-    .gm-list {
-      list-style: none;
-      padding: 0;
-      margin: 15px 0;
-    }
+    .gm-list { list-style: none; padding: 0; margin: 15px 0; }
     .gm-item {
       display: flex;
       justify-content: space-between;
@@ -221,29 +209,28 @@
       margin-bottom: 8px;
       transition: background 0.2s;
     }
-    .gm-item.dead {
-      background: #1a1a1a;
-      opacity: 0.5;
+    .gm-item.dead { background: #1a1a1a; opacity: 0.5; }
+    .gm-item.dead .gm-name, .gm-item.dead .gm-role { text-decoration: line-through; }
+    .gm-name { font-weight: bold; color: #00adb5; }
+    .gm-role { font-weight: bold; color: #4ecca3; }
+    
+    .action-btn-group {
+      display: flex;
+      gap: 5px;
     }
-    .gm-item.dead .gm-name, .gm-item.dead .gm-role {
-      text-decoration: line-through;
-    }
-    .gm-name {
-      font-weight: bold;
-      color: #00adb5;
-    }
-    .gm-role {
-      font-weight: bold;
-      color: #4ecca3;
-    }
-    .btn-kill {
+    .btn-action {
       background: #333;
       border: 1px solid #555;
       border-radius: 6px;
       cursor: pointer;
       padding: 4px 8px;
-      font-size: 1.1rem;
-      margin-left: 10px;
+      font-size: 0.9rem;
+      color: #fff;
+    }
+    .btn-action.active-bm {
+      background: #ffd700;
+      color: #121212;
+      border-color: #ffd700;
     }
 
     .win-banner {
@@ -255,71 +242,37 @@
       font-size: 1.2rem;
       font-weight: bold;
       margin-bottom: 15px;
-      animation: pulse 1.5s infinite alternate;
     }
 
-    .night-tabs {
-      display: flex;
-      gap: 10px;
-      margin-top: 10px;
-    }
+    .night-tabs { display: flex; gap: 10px; margin-top: 10px; }
     .night-tab-btn {
-      flex: 1;
-      padding: 8px;
-      background: #2a2a2a;
-      border: 1px solid #444;
-      color: #aaa;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
+      flex: 1; padding: 8px;
+      background: #2a2a2a; border: 1px solid #444;
+      color: #aaa; border-radius: 8px; cursor: pointer; font-weight: bold;
     }
-    .night-tab-btn.active {
-      background: #00adb5;
-      color: white;
-      border-color: #00adb5;
-    }
+    .night-tab-btn.active { background: #00adb5; color: white; border-color: #00adb5; }
 
     .night-flow-list {
-      background: #181920;
-      border-radius: 10px;
-      padding: 12px 15px 12px 30px;
-      margin-top: 10px;
-      font-size: 0.95rem;
-      color: #ddd;
+      background: #181920; border-radius: 10px;
+      padding: 12px 15px 12px 30px; margin-top: 10px;
+      font-size: 0.95rem; color: #ddd;
     }
-    .night-flow-list li {
-      margin-bottom: 8px;
-    }
+    .night-flow-list li { margin-bottom: 8px; }
 
     /* Modal Pop-up Styles */
     .modal-overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0,0,0,0.8);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      z-index: 1000;
+      display: flex; justify-content: center; align-items: center;
+      padding: 20px; z-index: 1000;
     }
     .modal-card {
-      background: #252a34;
-      border: 2px solid #00adb5;
-      border-radius: 16px;
-      padding: 20px;
-      max-width: 400px;
-      width: 100%;
-      text-align: center;
+      background: #252a34; border: 2px solid #00adb5;
+      border-radius: 16px; padding: 20px;
+      max-width: 400px; width: 100%; text-align: center;
     }
-    .modal-card h3 {
-      color: #00adb5;
-      margin-top: 0;
-    }
-    .modal-card p {
-      color: #ddd;
-      font-size: 0.95rem;
-      line-height: 1.4;
-    }
+    .modal-card h3 { color: #00adb5; margin-top: 0; }
+    .modal-card p { color: #ddd; font-size: 0.95rem; line-height: 1.4; }
   </style>
 </head>
 <body>
@@ -329,7 +282,6 @@
 
   <!-- Schritt 1: Spieleranzahl & Namen -->
   <div id="step1" class="card">
-    
     <div id="pwa-ios-notice" class="pwa-box" style="display: none;">
       <h3>📲 Als App speichern (iOS)</h3>
       <span>Tippe unten auf das <b>Teilen-Symbol</b> ⎘ (oder ⇡) und wähle <b>"Zum Home-Bildschirm"</b> ➕.</span>
@@ -451,19 +403,6 @@
       </label>
     </div>
 
-    <hr style="border: 0; border-top: 1px solid #333; margin: 15px 0;">
-
-    <div class="role-row" style="background: #253342;">
-      <div class="role-title">
-        <span>Bürgermeister vergeben 🎖️</span>
-        <button class="info-btn" onclick="showRoleInfo('buergermeister')">i</button>
-      </div>
-      <label class="switch">
-        <input type="checkbox" id="toggle-bm" checked>
-        <span class="slider"></span>
-      </label>
-    </div>
-
     <p id="role-warning" style="text-align: center; color: #ff6b6b; font-size: 0.9rem;"></p>
     <button class="primary-btn" id="start-game-btn" onclick="startGame()">Spiel starten</button>
   </div>
@@ -487,7 +426,7 @@
   <div id="step4" class="card" style="display: none;">
     <h2>📜 Erzähler-Übersicht</h2>
     <div id="win-banner-box"></div>
-    <p style="text-align: center; color: #aaa; font-size: 0.85rem;">Gib das Handy dem Spielleiter. Klicke auf 💀 um Spieler als tot zu markieren.</p>
+    <p style="text-align: center; color: #aaa; font-size: 0.85rem;">Wähle den <b>Bürgermeister 🎖️</b> nach der Wahl. Klicke auf 💀 um Tote zu markieren.</p>
     
     <ul class="gm-list" id="gm-roles-list"></ul>
 
@@ -514,6 +453,17 @@
   </div>
 </div>
 
+<!-- Modal für Dieb-Tausch -->
+<div id="thief-modal" class="modal-overlay" style="display: none;">
+  <div class="modal-card">
+    <h3>🥷 Dieb-Tausch</h3>
+    <p>Mit wem hat der Dieb in der 1. Nacht seine Rolle getauscht?</p>
+    <select id="thief-target-select"></select>
+    <button class="primary-btn" onclick="confirmThiefSwap()">Tausch durchführen</button>
+    <button class="secondary-btn" onclick="closeThiefModal()" style="background:#444;">Abbrechen</button>
+  </div>
+</div>
+
 <script>
   let playerCount = 6;
   let playerNames = [];
@@ -522,20 +472,21 @@
   let isCardRevealed = false;
   let activeNightTab = 1;
   let deferredPrompt;
+  let thiefPlayerIndex = -1;
 
   const specialRoles = ['seherin', 'hexe', 'amor', 'jaeger', 'blinzeln', 'matratze', 'dieb'];
 
   const roleDescriptions = {
     werwolf: "Wacht nachts mit den anderen Werwölfen auf und versucht, das Dorf auszuschalten.",
     dorfbewohner: "Hat keine Sonderfähigkeit, versucht tagsüber durch Diskussionen die Werwölfe zu entlarven.",
-    seherin: "Darf jede Nacht die genaue Rolle eines Mitspielers beim Erzähler erfragen.",
+    seherin: "Darf jede Nacht vor den Werwölfen die genaue Rolle eines Mitspielers beim Erzähler erfragen.",
     hexe: "Besitzt einen Heiltrank (rettet ein Opfer) und einen Gifttrank (tötet einen Spieler). Jeder Trank kann nur einmal pro Spiel genutzt werden.",
     amor: "Wählt in der 1. Nacht zwei Spieler als Liebespaar. Stirbt einer von beiden, stirbt der andere sofort aus Liebeskummer mit.",
     jaeger: "Wird der Jäger eliminiert, darf er im selben Moment noch einen Mitspieler mit in den Tod reißen.",
     blinzeln: "Darf nachts heimlich die Augen ein wenig öffnen, um die Werwölfe zu erspähen – muss aber aufpassen, nicht entdeckt zu werden!",
     matratze: "Wählt jede Nacht einen Partner. Wird die Dorfmatratze angegriffen, stirbt stattdessen ihr gewählter Partner.",
     dieb: "Darf in der 1. Nacht mit einem beliebigen Mitspieler die Rolle tauschen. Der Getauschte wird automatisch zum Dorfbewohner.",
-    buergermeister: "Wird zusätzlich vergeben. Die Stimme des Bürgermeisters zählt bei Unentschieden doppelt!"
+    buergermeister: "Wird vom Dorf gewählt. Die Stimme des Bürgermeisters zählt bei Unentschieden doppelt!"
   };
 
   function showRoleInfo(roleKey) {
@@ -728,15 +679,10 @@
       [rolesList[i], rolesList[j]] = [rolesList[j], rolesList[i]];
     }
 
-    let bmIndex = -1;
-    if (document.getElementById('toggle-bm').checked) {
-      bmIndex = Math.floor(Math.random() * playerNames.length);
-    }
-
     gamePlayers = playerNames.map((name, index) => ({
       name: name,
       role: rolesList[index],
-      isMayor: index === bmIndex,
+      isMayor: false,
       isDead: false
     }));
 
@@ -764,9 +710,6 @@
     if (!isCardRevealed) {
       const player = gamePlayers[currentTurnIndex];
       let displayContent = `<span>${player.role}</span>`;
-      if (player.isMayor) {
-        displayContent += `<span style="font-size:1.1rem; color:#ffd700; margin-top:5px;">🎖️ Du bist zusätzlich Bürgermeister!</span>`;
-      }
 
       roleText.innerHTML = displayContent;
       roleText.style.display = 'flex';
@@ -787,6 +730,50 @@
   function toggleKill(index) {
     gamePlayers[index].isDead = !gamePlayers[index].isDead;
     renderGMScreen();
+  }
+
+  function toggleMayor(index) {
+    gamePlayers.forEach((p, i) => {
+      if (i === index) p.isMayor = !p.isMayor;
+      else p.isMayor = false;
+    });
+    renderGMScreen();
+  }
+
+  function openThiefSwapModal(thiefIdx) {
+    thiefPlayerIndex = thiefIdx;
+    const select = document.getElementById('thief-target-select');
+    select.innerHTML = '';
+
+    gamePlayers.forEach((p, idx) => {
+      if (idx !== thiefIdx) {
+        const option = document.createElement('option');
+        option.value = idx;
+        option.innerText = `${p.name} (${p.role})`;
+        select.appendChild(option);
+      }
+    });
+
+    document.getElementById('thief-modal').style.display = 'flex';
+  }
+
+  function closeThiefModal() {
+    document.getElementById('thief-modal').style.display = 'none';
+  }
+
+  function confirmThiefSwap() {
+    const targetIdx = parseInt(document.getElementById('thief-target-select').value);
+    if (!isNaN(targetIdx) && thiefPlayerIndex !== -1) {
+      const targetRole = gamePlayers[targetIdx].role;
+      
+      // Der Dieb bekommt die Rolle des Ziel-Spielers
+      gamePlayers[thiefPlayerIndex].role = targetRole;
+      // Der getauschte Spieler wird zum Dorfbewohner
+      gamePlayers[targetIdx].role = 'Dorfbewohner 👨‍🌾';
+
+      closeThiefModal();
+      renderGMScreen();
+    }
   }
 
   function checkWinCondition() {
@@ -825,7 +812,7 @@
 
     if (activeNightTab === 1) {
       if(document.getElementById('toggle-dieb').checked) {
-        steps.push('<b>Dieb 🥷</b> wacht auf und zeigt auf eine Person, mit der er die Rolle tauschen möchte. Der Erzähler teilt dem Dieb leise seine neue Rolle mit. Danach teilt der Erzähler der getauschten Person leise mit, dass sie ab jetzt <b>Dorfbewohner</b> ist. Die Karte Dieb ist damit komplett aus dem Spiel.');
+        steps.push('<b>Dieb 🥷</b> wacht auf und zeigt auf eine Person, mit der er die Rolle tauschen möchte. Der Erzähler teilt dem Dieb leise seine neue Rolle mit und führt den Tausch oben in der Liste durch. Der getauschte Spieler wird zum <b>Dorfbewohner</b>.');
       }
       if(document.getElementById('toggle-amor').checked) {
         steps.push('<b>Amor 💘</b> wacht auf und wählt 2 Spieler als <i>Liebespaar</i>.');
@@ -833,6 +820,9 @@
       }
     }
 
+    if(document.getElementById('toggle-seherin').checked) {
+      steps.push('<b>Seherin 🔮</b> wacht auf, zeigt auf 1 Spieler und sieht dessen Rolle.');
+    }
     if(document.getElementById('toggle-matratze').checked) {
       steps.push('<b>Dorfmatratze 💋</b> wacht auf und wählt einen Partner für die Nacht.');
     }
@@ -842,9 +832,6 @@
         wolfStep += ' <i>(Das Blinzelmädchen 👁️ darf heimlich blinzeln!)</i>';
       }
       steps.push(wolfStep);
-    }
-    if(document.getElementById('toggle-seherin').checked) {
-      steps.push('<b>Seherin 🔮</b> wacht auf, zeigt auf 1 Spieler und sieht dessen Rolle.');
     }
     if(document.getElementById('toggle-hexe').checked) {
       steps.push('<b>Hexe 🧪</b> wacht auf: Erzähler zeigt Opfer. Sie kann mit Heil- oder Gifttrank reagieren.');
@@ -868,14 +855,18 @@
       li.className = `gm-item ${p.isDead ? 'dead' : ''}`;
       
       let roleInfo = p.role;
-      if (p.isMayor) roleInfo += ' 🎖️';
+      let isThief = p.role.includes('Dieb');
 
       li.innerHTML = `
         <div>
           <span class="gm-name">${p.name}</span>: 
           <span class="gm-role">${roleInfo}</span>
         </div>
-        <button class="btn-kill" onclick="toggleKill(${idx})">${p.isDead ? '🔄' : '💀'}</button>
+        <div class="action-btn-group">
+          ${isThief ? `<button class="btn-action" onclick="openThiefSwapModal(${idx})">🥷 Tauschen</button>` : ''}
+          <button class="btn-action ${p.isMayor ? 'active-bm' : ''}" onclick="toggleMayor(${idx})">🎖️</button>
+          <button class="btn-action" onclick="toggleKill(${idx})">${p.isDead ? '🔄' : '💀'}</button>
+        </div>
       `;
       list.appendChild(li);
     });
