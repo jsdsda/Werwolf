@@ -5,29 +5,85 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Werwolf - Pass & Play</title>
   <style>
+    :root {
+      --bg-color: #121212;
+      --card-bg: #1e1e1e;
+      --accent-red: #e94560;
+      --accent-teal: #00adb5;
+      --accent-green: #4ecca3;
+      --text-main: #ffffff;
+      --text-muted: #aaaaaa;
+      --border-color: #444444;
+    }
+
+    body.theme-neon {
+      --bg-color: #050515;
+      --card-bg: #0d0f2b;
+      --accent-red: #ff007f;
+      --accent-teal: #00f0ff;
+      --accent-green: #39ff14;
+      --border-color: #00f0ff;
+    }
+
+    body.theme-midnight {
+      --bg-color: #0b132b;
+      --card-bg: #1c2541;
+      --accent-red: #ff5a5f;
+      --accent-teal: #48cae4;
+      --accent-green: #52b788;
+      --border-color: #3a506b;
+    }
+
+    body.theme-forest {
+      --bg-color: #1b263b;
+      --card-bg: #2d3a4b;
+      --accent-red: #d90429;
+      --accent-teal: #e9c46a;
+      --accent-green: #2a9d8f;
+      --border-color: #415a77;
+    }
+
     * { box-sizing: border-box; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: #121212;
-      color: #ffffff;
+      background-color: var(--bg-color);
+      color: var(--text-main);
       margin: 0;
       padding: 20px 15px;
       display: flex;
       justify-content: center;
+      transition: background-color 0.3s;
     }
     .container {
       max-width: 450px;
       width: 100%;
+      position: relative;
+    }
+    .header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .settings-btn-top {
+      background: none;
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      border-radius: 50%;
+      width: 38px;
+      height: 38px;
+      font-size: 1.2rem;
+      cursor: pointer;
     }
     .card {
-      background-color: #1e1e1e;
+      background-color: var(--card-bg);
       border-radius: 16px;
       padding: 20px;
       margin-bottom: 20px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.5);
     }
-    h1 { color: #e94560; margin-top: 0; text-align: center; }
-    h2 { color: #00adb5; font-size: 1.2rem; margin-top: 0; text-align: center; }
+    h1 { color: var(--accent-red); margin: 0; text-align: center; }
+    h2 { color: var(--accent-teal); font-size: 1.2rem; margin-top: 0; text-align: center; }
     
     .player-count-control {
       display: flex;
@@ -37,7 +93,7 @@
       margin: 15px 0;
     }
     .btn-counter {
-      background-color: #00adb5;
+      background-color: var(--accent-teal);
       color: white;
       border: none;
       width: 40px;
@@ -60,9 +116,9 @@
     input[type="text"], input[type="number"], select {
       padding: 10px;
       border-radius: 8px;
-      border: 1px solid #444;
-      background: #333;
-      color: #fff;
+      border: 1px solid var(--border-color);
+      background: rgba(0,0,0,0.3);
+      color: var(--text-main);
       font-size: 1rem;
       width: 100%;
       margin-bottom: 8px;
@@ -73,226 +129,154 @@
       justify-content: space-between;
       align-items: center;
       margin: 10px 0;
-      background: #2a2a2a;
+      background: rgba(255,255,255,0.05);
       padding: 10px 14px;
       border-radius: 10px;
-      transition: opacity 0.2s;
     }
-    .role-title {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
+    .role-title { display: flex; align-items: center; gap: 6px; }
     .info-btn {
-      background: #333;
-      border: 1px solid #00adb5;
-      color: #00adb5;
+      background: transparent;
+      border: 1px solid var(--accent-teal);
+      color: var(--accent-teal);
       border-radius: 50%;
-      width: 22px;
-      height: 22px;
-      font-size: 0.8rem;
-      font-weight: bold;
+      width: 22px; height: 22px;
+      font-size: 0.8rem; font-weight: bold;
       cursor: pointer;
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-      padding: 0;
+      display: inline-flex; justify-content: center; align-items: center;
     }
-    .role-row.disabled {
-      opacity: 0.4;
-    }
+    .role-row.disabled { opacity: 0.4; }
     .role-row input[type="number"] { width: 60px; text-align: center; margin-bottom: 0; }
 
-    .switch {
-      position: relative;
-      display: inline-block;
-      width: 50px;
-      height: 28px;
-    }
+    .switch { position: relative; display: inline-block; width: 50px; height: 28px; }
     .switch input { opacity: 0; width: 0; height: 0; }
     .slider {
-      position: absolute;
-      cursor: pointer;
+      position: absolute; cursor: pointer;
       top: 0; left: 0; right: 0; bottom: 0;
-      background-color: #444;
-      transition: .3s;
-      border-radius: 28px;
+      background-color: var(--border-color);
+      transition: .3s; border-radius: 28px;
     }
     .slider:before {
-      position: absolute;
-      content: "";
-      height: 20px; width: 20px;
-      left: 4px; bottom: 4px;
-      background-color: white;
-      transition: .3s;
-      border-radius: 50%;
+      position: absolute; content: "";
+      height: 20px; width: 20px; left: 4px; bottom: 4px;
+      background-color: white; transition: .3s; border-radius: 50%;
     }
-    input:checked + .slider { background-color: #00adb5; }
+    input:checked + .slider { background-color: var(--accent-teal); }
     input:checked + .slider:before { transform: translateX(22px); }
 
     button.primary-btn {
-      background-color: #e94560;
-      color: white;
-      border: none;
-      padding: 14px;
-      font-size: 1rem;
-      font-weight: bold;
-      border-radius: 10px;
-      cursor: pointer;
-      width: 100%;
-      margin-top: 15px;
+      background-color: var(--accent-red);
+      color: white; border: none; padding: 14px;
+      font-size: 1rem; font-weight: bold;
+      border-radius: 10px; cursor: pointer; width: 100%; margin-top: 15px;
     }
 
     button.secondary-btn {
-      background-color: #00adb5;
-      color: white;
-      border: none;
-      padding: 12px;
-      font-size: 0.95rem;
-      font-weight: bold;
-      border-radius: 10px;
-      cursor: pointer;
-      width: 100%;
-      margin-top: 10px;
+      background-color: var(--accent-teal);
+      color: white; border: none; padding: 10px;
+      font-size: 0.9rem; font-weight: bold;
+      border-radius: 8px; cursor: pointer; width: 100%; margin-top: 8px;
     }
-
-    .pwa-box {
-      background: #252a34;
-      border: 1px dashed #00adb5;
-      border-radius: 12px;
-      padding: 12px 15px;
-      margin-bottom: 20px;
-      font-size: 0.85rem;
-      color: #ccc;
-    }
-    .pwa-box h3 { margin: 0 0 5px 0; color: #00adb5; font-size: 0.95rem; }
 
     .turn-box {
-      background: #252a34;
-      border-radius: 12px;
-      padding: 25px;
-      text-align: center;
-      margin-top: 15px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px; padding: 25px;
+      text-align: center; margin-top: 15px;
     }
-    .player-name-title {
-      font-size: 1.8rem;
-      font-weight: bold;
-      color: #00adb5;
-      margin-bottom: 15px;
-    }
+    .player-name-title { font-size: 1.8rem; font-weight: bold; color: var(--accent-teal); margin-bottom: 15px; }
     .secret-role-display {
-      background: #181920;
-      border: 2px dashed #e94560;
-      border-radius: 10px;
-      padding: 20px;
-      font-size: 1.4rem;
-      font-weight: bold;
-      color: #4ecca3;
-      margin: 20px 0;
-      min-height: 90px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 5px;
+      background: rgba(0,0,0,0.4);
+      border: 2px dashed var(--accent-red);
+      border-radius: 10px; padding: 20px;
+      font-size: 1.4rem; font-weight: bold; color: var(--accent-green);
+      margin: 20px 0; min-height: 90px;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
     }
-    .instruction { color: #aaa; font-size: 0.95rem; }
 
-    .gm-list { list-style: none; padding: 0; margin: 15px 0; }
+    .gm-list { list-style: none; padding: 0; margin: 10px 0; }
     .gm-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #2a2a2a;
-      padding: 10px 14px;
-      border-radius: 8px;
-      margin-bottom: 8px;
-      transition: background 0.2s;
+      display: flex; justify-content: space-between; align-items: center;
+      background: rgba(255,255,255,0.05);
+      padding: 10px 14px; border-radius: 8px; margin-bottom: 8px;
     }
-    .gm-item.dead { background: #1a1a1a; opacity: 0.5; }
+    .gm-item.dead { opacity: 0.4; }
     .gm-item.dead .gm-name, .gm-item.dead .gm-role { text-decoration: line-through; }
-    .gm-name { font-weight: bold; color: #00adb5; }
-    .gm-role { font-weight: bold; color: #4ecca3; }
+    .gm-name { font-weight: bold; color: var(--accent-teal); }
+    .gm-role { font-weight: bold; color: var(--accent-green); }
     
-    .action-btn-group {
-      display: flex;
-      gap: 5px;
-    }
+    .action-btn-group { display: flex; gap: 5px; }
     .btn-action {
-      background: #333;
-      border: 1px solid #555;
-      border-radius: 6px;
-      cursor: pointer;
-      padding: 4px 8px;
-      font-size: 0.9rem;
-      color: #fff;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--border-color);
+      border-radius: 6px; cursor: pointer;
+      padding: 4px 8px; font-size: 0.9rem; color: #fff;
     }
-    .btn-action.active-bm {
-      background: #ffd700;
-      color: #121212;
-      border-color: #ffd700;
-    }
+    .btn-action.active-bm { background: #ffd700; color: #121212; border-color: #ffd700; }
 
     .win-banner {
-      background: #4ecca3;
-      color: #121212;
-      padding: 15px;
-      border-radius: 10px;
-      text-align: center;
-      font-size: 1.2rem;
-      font-weight: bold;
-      margin-bottom: 15px;
+      background: var(--accent-green); color: #121212;
+      padding: 15px; border-radius: 10px; text-align: center;
+      font-size: 1.2rem; font-weight: bold; margin-bottom: 15px;
     }
 
     .night-tabs { display: flex; gap: 10px; margin-top: 10px; }
     .night-tab-btn {
       flex: 1; padding: 8px;
-      background: #2a2a2a; border: 1px solid #444;
-      color: #aaa; border-radius: 8px; cursor: pointer; font-weight: bold;
+      background: rgba(255,255,255,0.05); border: 1px solid var(--border-color);
+      color: var(--text-muted); border-radius: 8px; cursor: pointer; font-weight: bold;
     }
-    .night-tab-btn.active { background: #00adb5; color: white; border-color: #00adb5; }
+    .night-tab-btn.active { background: var(--accent-teal); color: white; border-color: var(--accent-teal); }
 
     .night-flow-list {
-      background: #181920; border-radius: 10px;
+      background: rgba(0,0,0,0.3); border-radius: 10px;
       padding: 12px 15px 12px 30px; margin-top: 10px;
       font-size: 0.95rem; color: #ddd;
     }
     .night-flow-list li { margin-bottom: 8px; }
 
-    /* Modal Pop-up Styles */
+    /* Timer Widget */
+    .timer-box {
+      background: rgba(0,0,0,0.3); border: 1px solid var(--border-color);
+      border-radius: 12px; padding: 12px; text-align: center; margin-bottom: 15px;
+    }
+    .timer-display { font-size: 1.8rem; font-weight: bold; color: var(--accent-teal); margin: 5px 0; }
+    .timer-controls { display: flex; gap: 8px; justify-content: center; }
+    .timer-btn {
+      background: var(--border-color); border: none; color: white;
+      padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem;
+    }
+
+    /* Modals */
     .modal-overlay {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.8);
+      background: rgba(0,0,0,0.85);
       display: flex; justify-content: center; align-items: center;
       padding: 20px; z-index: 1000;
     }
     .modal-card {
-      background: #252a34; border: 2px solid #00adb5;
-      border-radius: 16px; padding: 20px;
-      max-width: 400px; width: 100%; text-align: center;
+      background: var(--card-bg); border: 2px solid var(--accent-teal);
+      border-radius: 16px; padding: 20px; max-width: 400px; width: 100%; text-align: center;
     }
-    .modal-card h3 { color: #00adb5; margin-top: 0; }
-    .modal-card p { color: #ddd; font-size: 0.95rem; line-height: 1.4; }
+    .modal-card h3 { color: var(--accent-teal); margin-top: 0; }
   </style>
 </head>
 <body>
 
 <div class="container">
-  <h1>🐺 Werwolf</h1>
+  <div class="header-bar">
+    <h1 style="font-size: 1.5rem;">🐺 Werwolf</h1>
+    <button class="settings-btn-top" onclick="openSettings()">⚙️</button>
+  </div>
 
   <!-- Schritt 1: Spieleranzahl & Namen -->
   <div id="step1" class="card">
-    <div id="pwa-ios-notice" class="pwa-box" style="display: none;">
-      <h3>📲 Als App speichern (iOS)</h3>
-      <span>Tippe unten auf das <b>Teilen-Symbol</b> ⎘ (oder ⇡) und wähle <b>"Zum Home-Bildschirm"</b> ➕.</span>
-    </div>
-
-    <div id="pwa-android-notice" class="pwa-box" style="display: none;">
-      <h3>📲 Als App speichern</h3>
-      <button class="secondary-btn" id="install-android-btn" onclick="installAndroidApp()">📱 Zum Home-Bildschirm hinzufügen</button>
-    </div>
-
     <h2>1. Spieler eingeben</h2>
+    
+    <div style="margin-bottom: 15px;">
+      <select id="group-select" onchange="loadSelectedGroup()">
+        <option value="">-- Gespeicherte Gruppe laden --</option>
+      </select>
+    </div>
+
     <div class="player-count-control">
       <button class="btn-counter" onclick="changePlayerCount(-1)">-</button>
       <span class="count-display" id="player-count-text">6 Spieler</span>
@@ -306,7 +290,7 @@
   <!-- Schritt 2: Rollen festlegen -->
   <div id="step2" class="card" style="display: none;">
     <h2>2. Rollen wählen</h2>
-    <p id="target-count-info" style="text-align: center; color: #00adb5; font-weight: bold;"></p>
+    <p id="target-count-info" style="text-align: center; color: var(--accent-teal); font-weight: bold;"></p>
 
     <div class="role-row">
       <div class="role-title">
@@ -321,117 +305,71 @@
         <span>Dorfbewohner 👨‍🌾</span>
         <button class="info-btn" onclick="showRoleInfo('dorfbewohner')">i</button>
       </div>
-      <input type="number" id="count-dorf" value="2" min="0" readonly style="background: #222; color: #aaa;">
+      <input type="number" id="count-dorf" value="2" min="0" readonly style="background: rgba(0,0,0,0.5); opacity: 0.7;">
     </div>
 
-    <hr style="border: 0; border-top: 1px solid #333; margin: 15px 0;">
+    <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 15px 0;">
 
     <div class="role-row" id="row-seherin">
-      <div class="role-title">
-        <span>Seherin 🔮</span>
-        <button class="info-btn" onclick="showRoleInfo('seherin')">i</button>
-      </div>
-      <label class="switch">
-        <input type="checkbox" id="toggle-seherin" checked onchange="adjustVillageCount()">
-        <span class="slider"></span>
-      </label>
+      <div class="role-title"><span>Seherin 🔮</span><button class="info-btn" onclick="showRoleInfo('seherin')">i</button></div>
+      <label class="switch"><input type="checkbox" id="toggle-seherin" checked onchange="adjustVillageCount()"><span class="slider"></span></label>
     </div>
 
     <div class="role-row" id="row-hexe">
-      <div class="role-title">
-        <span>Hexe 🧪</span>
-        <button class="info-btn" onclick="showRoleInfo('hexe')">i</button>
-      </div>
-      <label class="switch">
-        <input type="checkbox" id="toggle-hexe" checked onchange="adjustVillageCount()">
-        <span class="slider"></span>
-      </label>
+      <div class="role-title"><span>Hexe 🧪</span><button class="info-btn" onclick="showRoleInfo('hexe')">i</button></div>
+      <label class="switch"><input type="checkbox" id="toggle-hexe" checked onchange="adjustVillageCount()"><span class="slider"></span></label>
     </div>
 
     <div class="role-row" id="row-amor">
-      <div class="role-title">
-        <span>Amor 💘</span>
-        <button class="info-btn" onclick="showRoleInfo('amor')">i</button>
-      </div>
-      <label class="switch">
-        <input type="checkbox" id="toggle-amor" onchange="adjustVillageCount()">
-        <span class="slider"></span>
-      </label>
+      <div class="role-title"><span>Amor 💘</span><button class="info-btn" onclick="showRoleInfo('amor')">i</button></div>
+      <label class="switch"><input type="checkbox" id="toggle-amor" onchange="adjustVillageCount()"><span class="slider"></span></label>
     </div>
 
     <div class="role-row" id="row-jaeger">
-      <div class="role-title">
-        <span>Jäger 🏹</span>
-        <button class="info-btn" onclick="showRoleInfo('jaeger')">i</button>
-      </div>
-      <label class="switch">
-        <input type="checkbox" id="toggle-jaeger" onchange="adjustVillageCount()">
-        <span class="slider"></span>
-      </label>
+      <div class="role-title"><span>Jäger 🏹</span><button class="info-btn" onclick="showRoleInfo('jaeger')">i</button></div>
+      <label class="switch"><input type="checkbox" id="toggle-jaeger" onchange="adjustVillageCount()"><span class="slider"></span></label>
     </div>
 
     <div class="role-row" id="row-blinzeln">
-      <div class="role-title">
-        <span>Blinzelmädchen 👁️</span>
-        <button class="info-btn" onclick="showRoleInfo('blinzeln')">i</button>
-      </div>
-      <label class="switch">
-        <input type="checkbox" id="toggle-blinzeln" onchange="adjustVillageCount()">
-        <span class="slider"></span>
-      </label>
+      <div class="role-title"><span>Blinzelmädchen 👁️</span><button class="info-btn" onclick="showRoleInfo('blinzeln')">i</button></div>
+      <label class="switch"><input type="checkbox" id="toggle-blinzeln" onchange="adjustVillageCount()"><span class="slider"></span></label>
     </div>
 
     <div class="role-row" id="row-matratze">
-      <div class="role-title">
-        <span>Dorfmatratze 💋</span>
-        <button class="info-btn" onclick="showRoleInfo('matratze')">i</button>
-      </div>
-      <label class="switch">
-        <input type="checkbox" id="toggle-matratze" onchange="adjustVillageCount()">
-        <span class="slider"></span>
-      </label>
+      <div class="role-title"><span>Dorfmatratze 💋</span><button class="info-btn" onclick="showRoleInfo('matratze')">i</button></div>
+      <label class="switch"><input type="checkbox" id="toggle-matratze" onchange="adjustVillageCount()"><span class="slider"></span></label>
     </div>
 
     <div class="role-row" id="row-dieb">
-      <div class="role-title">
-        <span>Dieb 🥷</span>
-        <button class="info-btn" onclick="showRoleInfo('dieb')">i</button>
-      </div>
-      <label class="switch">
-        <input type="checkbox" id="toggle-dieb" onchange="adjustVillageCount()">
-        <span class="slider"></span>
-      </label>
+      <div class="role-title"><span>Dieb 🥷</span><button class="info-btn" onclick="showRoleInfo('dieb')">i</button></div>
+      <label class="switch"><input type="checkbox" id="toggle-dieb" onchange="adjustVillageCount()"><span class="slider"></span></label>
     </div>
 
-    <hr style="border: 0; border-top: 1px solid #333; margin: 15px 0;">
+    <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 15px 0;">
 
     <div class="role-row" id="row-buergermeister">
-      <div class="role-title">
-        <span>Bürgermeister 🎖️</span>
-        <button class="info-btn" onclick="showRoleInfo('buergermeister')">i</button>
-      </div>
-      <label class="switch">
-        <input type="checkbox" id="toggle-buergermeister" checked>
-        <span class="slider"></span>
-      </label>
+      <div class="role-title"><span>Bürgermeister 🎖️</span><button class="info-btn" onclick="showRoleInfo('buergermeister')">i</button></div>
+      <label class="switch"><input type="checkbox" id="toggle-buergermeister" checked><span class="slider"></span></label>
     </div>
 
-    <p id="role-warning" style="text-align: center; color: #ff6b6b; font-size: 0.9rem;"></p>
+    <p id="role-warning" style="text-align: center; color: var(--accent-red); font-size: 0.9rem;"></p>
     <button class="primary-btn" id="start-game-btn" onclick="startGame()">Spiel starten</button>
   </div>
 
-  <!-- Schritt 3: Pass & Play -->
+  <!-- Schritt 3: Pass & Play mit Sicherheitsabfrage -->
   <div id="step3" class="card" style="display: none;">
     <div class="turn-box">
-      <div class="instruction">Gib das Handy an:</div>
-      <div class="player-name-title" id="current-player-name">Spieler</div>
-
-      <div class="secret-role-display" id="role-box">
-        <div id="role-text" style="display: none;"></div>
-        <span id="placeholder-text">❓ Rolle verdeckt</span>
+      <div id="pass-guard-screen">
+        <div style="color: var(--text-muted); font-size: 0.95rem;">Gib das Handy weiter an:</div>
+        <div class="player-name-title" id="guard-player-name">Spieler</div>
+        <button class="primary-btn" onclick="confirmIdentity()">Ich bin's (Karte aufdecken)</button>
       </div>
 
-      <button class="primary-btn" id="reveal-btn" onclick="handleTurnClick()">Karte aufdecken</button>
+      <div id="secret-role-screen" style="display: none;">
+        <div style="color: var(--text-muted); font-size: 0.95rem;">Deine geheime Rolle:</div>
+        <div class="secret-role-display" id="role-box-content"></div>
+        <button class="primary-btn" onclick="nextPlayerTurn()">Karte verdecken & Weitergeben</button>
+      </div>
     </div>
   </div>
 
@@ -439,13 +377,30 @@
   <div id="step4" class="card" style="display: none;">
     <h2>📜 Erzähler-Übersicht</h2>
     <div id="win-banner-box"></div>
-    <p id="mayor-hint" style="text-align: center; color: #aaa; font-size: 0.85rem;">Wähle den <b>Bürgermeister 🎖️</b> nach der Wahl. Klicke auf 💀 um Tote zu markieren.</p>
+
+    <!-- Timer Widget -->
+    <div class="timer-box">
+      <div style="font-size: 0.85rem; color: var(--text-muted);">⏱️ Tagesdiskussion Timer</div>
+      <div class="timer-display" id="timer-display">05:00</div>
+      <div class="timer-controls">
+        <button class="timer-btn" onclick="setTimer(180)">3 Min</button>
+        <button class="timer-btn" onclick="setTimer(300)">5 Min</button>
+        <button class="timer-btn" onclick="setTimer(600)">10 Min</button>
+        <button class="timer-btn" style="background: var(--accent-teal);" id="timer-start-btn" onclick="toggleTimer()">Start</button>
+      </div>
+    </div>
+
+    <p id="mayor-hint" style="text-align: center; color: var(--text-muted); font-size: 0.85rem;"></p>
     
-    <ul class="gm-list" id="gm-roles-list"></ul>
+    <h3 style="color: var(--accent-teal); font-size: 1rem; margin-bottom: 5px;">Lebende Spieler</h3>
+    <ul class="gm-list" id="gm-alive-list"></ul>
 
-    <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;">
+    <h3 style="color: var(--accent-red); font-size: 1rem; margin: 15px 0 5px 0;">🪦 Friedhof (Tote Spieler)</h3>
+    <ul class="gm-list" id="gm-dead-list"></ul>
 
-    <h2>🌙 Nacht-Ablauf</h2>
+    <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 20px 0;">
+
+    <h2>🌙 Dynamischer Nacht-Ablauf</h2>
     <div class="night-tabs">
       <button class="night-tab-btn active" id="tab-night1" onclick="switchNightTab(1)">1. Nacht</button>
       <button class="night-tab-btn" id="tab-night2" onclick="switchNightTab(2)">2.+ Nacht</button>
@@ -457,11 +412,39 @@
   </div>
 </div>
 
+<!-- Modal: Einstellungen & Spielprofile -->
+<div id="settings-modal" class="modal-overlay" style="display: none;">
+  <div class="modal-card">
+    <h3>⚙️ Einstellungen</h3>
+    
+    <div style="text-align: left; margin-bottom: 15px;">
+      <label style="font-size: 0.9rem; font-weight: bold;">Farbschema / Design:</label>
+      <select id="theme-select" onchange="changeTheme(this.value)">
+        <option value="default">Dark (Standard)</option>
+        <option value="neon">Cyberpunk / Neon</option>
+        <option value="midnight">Midnight Blue</option>
+        <option value="forest">Forest / Wald</option>
+      </select>
+    </div>
+
+    <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 15px 0;">
+
+    <div style="text-align: left; margin-bottom: 15px;">
+      <label style="font-size: 0.9rem; font-weight: bold;">Gruppe speichern:</label>
+      <input type="text" id="group-name-input" placeholder="Gruppenname (z.B. Stammgruppe)">
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: -4px;">Speichert die aktuell in Schritt 1 eingetragenen Namen.</p>
+      <button class="secondary-btn" onclick="saveCurrentGroup()">Gruppe jetzt speichern</button>
+    </div>
+
+    <button class="primary-btn" onclick="closeSettings()">Schließen</button>
+  </div>
+</div>
+
 <!-- Modal für Rollen-Infos -->
 <div id="info-modal" class="modal-overlay" style="display: none;">
   <div class="modal-card">
     <h3 id="modal-title">Rollen-Info</h3>
-    <p id="modal-text"></p>
+    <p id="modal-text" style="font-size: 0.95rem; line-height: 1.4;"></p>
     <button class="secondary-btn" onclick="closeModal()">Schließen</button>
   </div>
 </div>
@@ -482,11 +465,14 @@
   let playerNames = [];
   let gamePlayers = [];
   let currentTurnIndex = 0;
-  let isCardRevealed = false;
   let activeNightTab = 1;
-  let deferredPrompt;
   let thiefPlayerIndex = -1;
   let useMayor = true;
+
+  // Timer Variables
+  let timerInterval = null;
+  let timerSeconds = 300;
+  let isTimerRunning = false;
 
   const specialRoles = ['seherin', 'hexe', 'amor', 'jaeger', 'blinzeln', 'matratze', 'dieb'];
 
@@ -503,57 +489,77 @@
     buergermeister: "Wird vom Dorf gewählt. Die Stimme des Bürgermeisters zählt bei Unentschieden doppelt!"
   };
 
-  function showRoleInfo(roleKey) {
-    const titleMap = {
-      werwolf: "Werwolf 🐺",
-      dorfbewohner: "Dorfbewohner 👨‍🌾",
-      seherin: "Seherin 🔮",
-      hexe: "Hexe 🧪",
-      amor: "Amor 💘",
-      jaeger: "Jäger 🏹",
-      blinzeln: "Blinzelmädchen 👁️",
-      matratze: "Dorfmatratze 💋",
-      dieb: "Dieb 🥷",
-      buergermeister: "Bürgermeister 🎖️"
-    };
+  // --- Settings & Profile Storage ---
+  function openSettings() { document.getElementById('settings-modal').style.display = 'flex'; }
+  function closeSettings() { document.getElementById('settings-modal').style.display = 'none'; }
 
-    document.getElementById('modal-title').innerText = titleMap[roleKey];
-    document.getElementById('modal-text').innerText = roleDescriptions[roleKey];
-    document.getElementById('info-modal').style.display = 'flex';
+  function changeTheme(themeKey) {
+    document.body.className = '';
+    if (themeKey !== 'default') {
+      document.body.classList.add(`theme-${themeKey}`);
+    }
+    localStorage.setItem('werwolf_theme', themeKey);
   }
 
-  function closeModal() {
-    document.getElementById('info-modal').style.display = 'none';
+  function loadSavedTheme() {
+    const savedTheme = localStorage.getItem('werwolf_theme') || 'default';
+    document.getElementById('theme-select').value = savedTheme;
+    changeTheme(savedTheme);
   }
 
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    document.getElementById('pwa-android-notice').style.display = 'block';
-  });
+  function saveCurrentGroup() {
+    const groupName = document.getElementById('group-name-input').value.trim();
+    if (!groupName) {
+      alert("Bitte gib einen Namen für die Gruppe ein!");
+      return;
+    }
 
-  function installAndroidApp() {
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      deferredPrompt.userChoice.then((choiceResult) => {
-        if (choiceResult.outcome === 'accepted') {
-          document.getElementById('pwa-android-notice').style.display = 'none';
-        }
-        deferredPrompt = null;
-      });
+    const currentNames = [];
+    for(let i = 0; i < playerCount; i++) {
+      let name = document.getElementById(`name-${i}`).value.trim();
+      if(name) currentNames.push(name);
+    }
+
+    if(currentNames.length < 2) {
+      alert("Trage zuerst mindestens 2 Spieler-Namen ein.");
+      return;
+    }
+
+    let groups = JSON.parse(localStorage.getItem('werwolf_groups') || '{}');
+    groups[groupName] = currentNames;
+    localStorage.setItem('werwolf_groups', JSON.stringify(groups));
+
+    document.getElementById('group-name-input').value = '';
+    alert(`Gruppe "${groupName}" gespeichert!`);
+    updateGroupDropdown();
+  }
+
+  function updateGroupDropdown() {
+    const select = document.getElementById('group-select');
+    select.innerHTML = '<option value="">-- Gespeicherte Gruppe laden --</option>';
+    let groups = JSON.parse(localStorage.getItem('werwolf_groups') || '{}');
+    for (let gName in groups) {
+      const option = document.createElement('option');
+      option.value = gName;
+      option.innerText = `${gName} (${groups[gName].length} Spieler)`;
+      select.appendChild(option);
     }
   }
 
-  function checkDeviceOS() {
-    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-    const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
-    const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+  function loadSelectedGroup() {
+    const gName = document.getElementById('group-select').value;
+    if(!gName) return;
 
-    if (!isStandalone && isIOS) {
-      document.getElementById('pwa-ios-notice').style.display = 'block';
+    let groups = JSON.parse(localStorage.getItem('werwolf_groups') || '{}');
+    const names = groups[gName];
+    if(names) {
+      playerCount = names.length;
+      playerNames = [...names];
+      renderPlayerInputs();
     }
   }
 
+  // --- Step 1 Logik ---
   function renderPlayerInputs() {
     const container = document.getElementById('player-inputs');
     const currentValues = [];
@@ -588,16 +594,11 @@
     if (playerCount >= 6 && playerCount <= 8) wolves = 2;
     else if (playerCount >= 9) wolves = 3;
 
-    let useSeherin = playerCount >= 4;
-    let useHexe = playerCount >= 5;
-    let useAmor = playerCount >= 7;
-    let useJaeger = playerCount >= 8;
-
     document.getElementById('count-werwolf').value = wolves;
-    document.getElementById('toggle-seherin').checked = useSeherin;
-    document.getElementById('toggle-hexe').checked = useHexe;
-    document.getElementById('toggle-amor').checked = useAmor;
-    document.getElementById('toggle-jaeger').checked = useJaeger;
+    document.getElementById('toggle-seherin').checked = playerCount >= 4;
+    document.getElementById('toggle-hexe').checked = playerCount >= 5;
+    document.getElementById('toggle-amor').checked = playerCount >= 7;
+    document.getElementById('toggle-jaeger').checked = playerCount >= 8;
     document.getElementById('toggle-blinzeln').checked = false;
     document.getElementById('toggle-matratze').checked = false;
     document.getElementById('toggle-dieb').checked = false;
@@ -607,33 +608,11 @@
   function adjustVillageCount() {
     let wolves = parseInt(document.getElementById('count-werwolf').value) || 0;
     let specialCount = 0;
-    
-    specialRoles.forEach(role => {
-      if(document.getElementById(`toggle-${role}`).checked) specialCount++;
-    });
+    specialRoles.forEach(role => { if(document.getElementById(`toggle-${role}`).checked) specialCount++; });
 
     let targetDorf = playerCount - wolves - specialCount;
     if (targetDorf < 0) targetDorf = 0;
-
     document.getElementById('count-dorf').value = targetDorf;
-
-    specialRoles.forEach(role => {
-      const toggle = document.getElementById(`toggle-${role}`);
-      const row = document.getElementById(`row-${role}`);
-      
-      if (!toggle.checked) {
-        if (targetDorf === 0) {
-          toggle.disabled = true;
-          row.classList.add('disabled');
-        } else {
-          toggle.disabled = false;
-          row.classList.remove('disabled');
-        }
-      } else {
-        toggle.disabled = false;
-        row.classList.remove('disabled');
-      }
-    });
 
     updateRoleTotal();
   }
@@ -654,10 +633,7 @@
   function updateRoleTotal() {
     let count = (parseInt(document.getElementById('count-werwolf').value) || 0) +
                 (parseInt(document.getElementById('count-dorf').value) || 0);
-    
-    specialRoles.forEach(role => {
-      if(document.getElementById(`toggle-${role}`).checked) count++;
-    });
+    specialRoles.forEach(role => { if(document.getElementById(`toggle-${role}`).checked) count++; });
 
     const targetInfo = document.getElementById('target-count-info');
     const warning = document.getElementById('role-warning');
@@ -676,6 +652,7 @@
     }
   }
 
+  // --- Step 3 Pass & Play Logik ---
   function startGame() {
     useMayor = document.getElementById('toggle-buergermeister').checked;
 
@@ -710,85 +687,131 @@
   }
 
   function setupTurnUI() {
-    isCardRevealed = false;
     const player = gamePlayers[currentTurnIndex];
-
-    document.getElementById('current-player-name').innerText = player.name;
-    document.getElementById('role-text').style.display = 'none';
-    document.getElementById('placeholder-text').style.display = 'inline';
-    document.getElementById('reveal-btn').innerText = 'Karte aufdecken';
+    document.getElementById('guard-player-name').innerText = player.name;
+    document.getElementById('pass-guard-screen').style.display = 'block';
+    document.getElementById('secret-role-screen').style.display = 'none';
   }
 
-  function handleTurnClick() {
-    const roleText = document.getElementById('role-text');
-    const placeholder = document.getElementById('placeholder-text');
-    const btn = document.getElementById('reveal-btn');
+  function confirmIdentity() {
+    const player = gamePlayers[currentTurnIndex];
+    document.getElementById('role-box-content').innerHTML = `<span>${player.role}</span>`;
+    document.getElementById('pass-guard-screen').style.display = 'none';
+    document.getElementById('secret-role-screen').style.display = 'block';
+  }
 
-    if (!isCardRevealed) {
-      const player = gamePlayers[currentTurnIndex];
-      let displayContent = `<span>${player.role}</span>`;
-
-      roleText.innerHTML = displayContent;
-      roleText.style.display = 'flex';
-      roleText.style.flexDirection = 'column';
-      placeholder.style.display = 'none';
-      btn.innerText = 'Karte verdecken & Weitergeben';
-      isCardRevealed = true;
+  function nextPlayerTurn() {
+    currentTurnIndex++;
+    if (currentTurnIndex < gamePlayers.length) {
+      setupTurnUI();
     } else {
-      currentTurnIndex++;
-      if (currentTurnIndex < gamePlayers.length) {
-        setupTurnUI();
-      } else {
-        renderGMScreen();
-      }
+      renderGMScreen();
     }
   }
 
+  // --- Step 4 Erzähler Screen & Dynamischer Nacht-Ablauf ---
   function toggleKill(index) {
     gamePlayers[index].isDead = !gamePlayers[index].isDead;
     renderGMScreen();
   }
 
   function toggleMayor(index) {
-    gamePlayers.forEach((p, i) => {
-      if (i === index) p.isMayor = !p.isMayor;
-      else p.isMayor = false;
-    });
+    gamePlayers.forEach((p, i) => { p.isMayor = (i === index) ? !p.isMayor : false; });
     renderGMScreen();
   }
 
-  function openThiefSwapModal(thiefIdx) {
-    thiefPlayerIndex = thiefIdx;
-    const select = document.getElementById('thief-target-select');
-    select.innerHTML = '';
+  function renderGMScreen() {
+    const aliveList = document.getElementById('gm-alive-list');
+    const deadList = document.getElementById('gm-dead-list');
+    aliveList.innerHTML = '';
+    deadList.innerHTML = '';
+
+    const mayorHint = document.getElementById('mayor-hint');
+    mayorHint.innerHTML = useMayor 
+      ? 'Wähle den <b>Bürgermeister 🎖️</b> nach der Wahl. Klicke auf 💀 um Tote zu markieren.'
+      : 'Klicke auf 💀 um Tote zu markieren.';
 
     gamePlayers.forEach((p, idx) => {
-      if (idx !== thiefIdx) {
-        const option = document.createElement('option');
-        option.value = idx;
-        option.innerText = `${p.name} (${p.role})`;
-        select.appendChild(option);
-      }
+      const li = document.createElement('li');
+      li.className = `gm-item ${p.isDead ? 'dead' : ''}`;
+      
+      let isThief = p.role.includes('Dieb');
+
+      li.innerHTML = `
+        <div>
+          <span class="gm-name">${p.name}</span>: 
+          <span class="gm-role">${p.role}</span>
+        </div>
+        <div class="action-btn-group">
+          ${isThief && !p.isDead ? `<button class="btn-action" onclick="openThiefSwapModal(${idx})">🥷 Tauschen</button>` : ''}
+          ${useMayor && !p.isDead ? `<button class="btn-action ${p.isMayor ? 'active-bm' : ''}" onclick="toggleMayor(${idx})">🎖️</button>` : ''}
+          <button class="btn-action" onclick="toggleKill(${idx})">${p.isDead ? '🔄' : '💀'}</button>
+        </div>
+      `;
+
+      if (p.isDead) deadList.appendChild(li);
+      else aliveList.appendChild(li);
     });
 
-    document.getElementById('thief-modal').style.display = 'flex';
+    checkWinCondition();
+    renderNightFlow();
+
+    document.getElementById('step3').style.display = 'none';
+    document.getElementById('step4').style.display = 'block';
   }
 
-  function closeThiefModal() {
-    document.getElementById('thief-modal').style.display = 'none';
+  function switchNightTab(nightNumber) {
+    activeNightTab = nightNumber;
+    document.getElementById('tab-night1').classList.toggle('active', nightNumber === 1);
+    document.getElementById('tab-night2').classList.toggle('active', nightNumber === 2);
+    renderNightFlow();
   }
 
-  function confirmThiefSwap() {
-    const targetIdx = parseInt(document.getElementById('thief-target-select').value);
-    if (!isNaN(targetIdx) && thiefPlayerIndex !== -1) {
-      const targetRole = gamePlayers[targetIdx].role;
-      
-      gamePlayers[thiefPlayerIndex].role = targetRole;
-      gamePlayers[targetIdx].role = 'Dorfbewohner 👨‍🌾';
+  function isRoleAliveAndActive(roleKeyword) {
+    return gamePlayers.some(p => !p.isDead && p.role.includes(roleKeyword));
+  }
 
-      closeThiefModal();
-      renderGMScreen();
+  function renderNightFlow() {
+    const flowList = document.getElementById('night-flow-list');
+    flowList.innerHTML = '';
+
+    const steps = [];
+    steps.push('<b>Alle Spieler schließen die Augen.</b>');
+
+    if (activeNightTab === 1) {
+      if(isRoleAliveAndActive('Dieb')) {
+        steps.push('<b>Dieb 🥷</b> wacht auf und zeigt auf eine Person zum Tauschen.');
+      }
+      if(isRoleAliveAndActive('Amor')) {
+        steps.push('<b>Amor 💘</b> wacht auf und wählt 2 Spieler als Liebespaar.');
+        steps.push('<b>Amor 💘</b> schläft ein. Das <b>Liebespaar</b> wacht auf und blickt sich an.');
+      }
     }
+
+    if(isRoleAliveAndActive('Seherin')) {
+      steps.push('<b>Seherin 🔮</b> wacht auf, zeigt auf 1 Spieler und sieht dessen Rolle.');
+    }
+    if(isRoleAliveAndActive('Dorfmatratze')) {
+      steps.push('<b>Dorfmatratze 💋</b> wacht auf und wählt einen Partner für die Nacht.');
+    }
+    if(isRoleAliveAndActive('Werwolf')) {
+      let wolfStep = '<b>Werwölfe 🐺</b> wachen auf und wählen ein Opfer.';
+      if(isRoleAliveAndActive('Blinzelmädchen')) {
+        wolfStep += ' <i>(Das Blinzelmädchen 👁️ darf heimlich blinzeln!)</i>';
+      }
+      steps.push(wolfStep);
+    }
+    if(isRoleAliveAndActive('Hexe')) {
+      steps.push('<b>Hexe 🧪</b> wacht auf: Erzähler zeigt Opfer. Sie kann Heil- oder Gifttrank nutzen.');
+    }
+
+    steps.push('<b>Alle wachen auf!</b> Der Erzähler verkündet die Ereignisse der Nacht.');
+
+    steps.forEach(step => {
+      const li = document.createElement('li');
+      li.innerHTML = step;
+      flowList.appendChild(li);
+    });
   }
 
   function checkWinCondition() {
@@ -802,7 +825,7 @@
       if (aliveWolves.length === 0) {
         bannerBox.innerHTML = `<div class="win-banner">🎉 Das Dorf hat gewonnen! Alle Werwölfe wurden eliminiert.</div>`;
       } else if (aliveWolves.length >= aliveVillagers.length) {
-        bannerBox.innerHTML = `<div class="win-banner" style="background:#e94560; color:white;">🐺 Die Werwölfe haben gewonnen! Sie haben die Überzahl erreicht.</div>`;
+        bannerBox.innerHTML = `<div class="win-banner" style="background:var(--accent-red); color:white;">🐺 Die Werwölfe haben gewonnen! Sie haben die Überzahl erreicht.</div>`;
       } else {
         bannerBox.innerHTML = '';
       }
@@ -811,94 +834,86 @@
     }
   }
 
-  function switchNightTab(nightNumber) {
-    activeNightTab = nightNumber;
-    document.getElementById('tab-night1').classList.toggle('active', nightNumber === 1);
-    document.getElementById('tab-night2').classList.toggle('active', nightNumber === 2);
-    renderNightFlow();
+  // --- Timer Logik ---
+  function setTimer(sec) {
+    clearInterval(timerInterval);
+    isTimerRunning = false;
+    timerSeconds = sec;
+    document.getElementById('timer-start-btn').innerText = 'Start';
+    updateTimerDisplay();
   }
 
-  function renderNightFlow() {
-    const flowList = document.getElementById('night-flow-list');
-    flowList.innerHTML = '';
-
-    const steps = [];
-    steps.push('<b>Alle Spieler schließen die Augen.</b>');
-
-    if (activeNightTab === 1) {
-      if(document.getElementById('toggle-dieb').checked) {
-        steps.push('<b>Dieb 🥷</b> wacht auf und zeigt auf eine Person, mit der er die Rolle tauschen möchte. Der Erzähler teilt dem Dieb leise seine neue Rolle mit und führt den Tausch oben in der Liste durch. Der getauschte Spieler wird zum <b>Dorfbewohner</b>.');
-      }
-      if(document.getElementById('toggle-amor').checked) {
-        steps.push('<b>Amor 💘</b> wacht auf und wählt 2 Spieler als <i>Liebespaar</i>.');
-        steps.push('<b>Amor 💘</b> schläft ein. Das <b>Liebespaar</b> wacht auf und blickt sich an.');
-      }
-    }
-
-    if(document.getElementById('toggle-seherin').checked) {
-      steps.push('<b>Seherin 🔮</b> wacht auf, zeigt auf 1 Spieler und sieht dessen Rolle.');
-    }
-    if(document.getElementById('toggle-matratze').checked) {
-      steps.push('<b>Dorfmatratze 💋</b> wacht auf und wählt einen Partner für die Nacht.');
-    }
-    if(parseInt(document.getElementById('count-werwolf').value) > 0) {
-      let wolfStep = '<b>Werwölfe 🐺</b> wachen auf, einigen sich leise und wählen ein Opfer.';
-      if(document.getElementById('toggle-blinzeln').checked) {
-        wolfStep += ' <i>(Das Blinzelmädchen 👁️ darf heimlich blinzeln!)</i>';
-      }
-      steps.push(wolfStep);
-    }
-    if(document.getElementById('toggle-hexe').checked) {
-      steps.push('<b>Hexe 🧪</b> wacht auf: Erzähler zeigt Opfer. Sie kann mit Heil- oder Gifttrank reagieren.');
-    }
-
-    steps.push('<b>Alle wachen auf!</b> Der Erzähler verkündet, wer gestorben ist.');
-
-    steps.forEach(step => {
-      const li = document.createElement('li');
-      li.innerHTML = step;
-      flowList.appendChild(li);
-    });
-  }
-
-  function renderGMScreen() {
-    const list = document.getElementById('gm-roles-list');
-    list.innerHTML = '';
-
-    const mayorHint = document.getElementById('mayor-hint');
-    if (useMayor) {
-      mayorHint.innerHTML = 'Wähle den <b>Bürgermeister 🎖️</b> nach der Wahl. Klicke auf 💀 um Tote zu markieren.';
+  function toggleTimer() {
+    if (isTimerRunning) {
+      clearInterval(timerInterval);
+      isTimerRunning = false;
+      document.getElementById('timer-start-btn').innerText = 'Start';
     } else {
-      mayorHint.innerHTML = 'Klicke auf 💀 um Tote zu markieren.';
+      isTimerRunning = true;
+      document.getElementById('timer-start-btn').innerText = 'Pause';
+      timerInterval = setInterval(() => {
+        if (timerSeconds > 0) {
+          timerSeconds--;
+          updateTimerDisplay();
+        } else {
+          clearInterval(timerInterval);
+          isTimerRunning = false;
+          document.getElementById('timer-start-btn').innerText = 'Start';
+          alert('⏱️ Die Diskussionzeit ist abgelaufen!');
+        }
+      }, 1000);
     }
+  }
+
+  function updateTimerDisplay() {
+    const m = Math.floor(timerSeconds / 60).toString().padStart(2, '0');
+    const s = (timerSeconds % 60).toString().padStart(2, '0');
+    document.getElementById('timer-display').innerText = `${m}:${s}`;
+  }
+
+  // --- Dieb Modal & Helpers ---
+  function openThiefSwapModal(thiefIdx) {
+    thiefPlayerIndex = thiefIdx;
+    const select = document.getElementById('thief-target-select');
+    select.innerHTML = '';
 
     gamePlayers.forEach((p, idx) => {
-      const li = document.createElement('li');
-      li.className = `gm-item ${p.isDead ? 'dead' : ''}`;
-      
-      let roleInfo = p.role;
-      let isThief = p.role.includes('Dieb');
-
-      li.innerHTML = `
-        <div>
-          <span class="gm-name">${p.name}</span>: 
-          <span class="gm-role">${roleInfo}</span>
-        </div>
-        <div class="action-btn-group">
-          ${isThief ? `<button class="btn-action" onclick="openThiefSwapModal(${idx})">🥷 Tauschen</button>` : ''}
-          ${useMayor ? `<button class="btn-action ${p.isMayor ? 'active-bm' : ''}" onclick="toggleMayor(${idx})">🎖️</button>` : ''}
-          <button class="btn-action" onclick="toggleKill(${idx})">${p.isDead ? '🔄' : '💀'}</button>
-        </div>
-      `;
-      list.appendChild(li);
+      if (idx !== thiefIdx && !p.isDead) {
+        const option = document.createElement('option');
+        option.value = idx;
+        option.innerText = `${p.name} (${p.role})`;
+        select.appendChild(option);
+      }
     });
 
-    checkWinCondition();
-    renderNightFlow();
-
-    document.getElementById('step3').style.display = 'none';
-    document.getElementById('step4').style.display = 'block';
+    document.getElementById('thief-modal').style.display = 'flex';
   }
+
+  function closeThiefModal() { document.getElementById('thief-modal').style.display = 'none'; }
+
+  function confirmThiefSwap() {
+    const targetIdx = parseInt(document.getElementById('thief-target-select').value);
+    if (!isNaN(targetIdx) && thiefPlayerIndex !== -1) {
+      const targetRole = gamePlayers[targetIdx].role;
+      gamePlayers[thiefPlayerIndex].role = targetRole;
+      gamePlayers[targetIdx].role = 'Dorfbewohner 👨‍🌾';
+      closeThiefModal();
+      renderGMScreen();
+    }
+  }
+
+  function showRoleInfo(roleKey) {
+    const titleMap = {
+      werwolf: "Werwolf 🐺", dorfbewohner: "Dorfbewohner 👨‍🌾", seherin: "Seherin 🔮",
+      hexe: "Hexe 🧪", amor: "Amor 💘", jaeger: "Jäger 🏹", blinzeln: "Blinzelmädchen 👁️",
+      matratze: "Dorfmatratze 💋", dieb: "Dieb 🥷", buergermeister: "Bürgermeister 🎖️"
+    };
+    document.getElementById('modal-title').innerText = titleMap[roleKey];
+    document.getElementById('modal-text').innerText = roleDescriptions[roleKey];
+    document.getElementById('info-modal').style.display = 'flex';
+  }
+
+  function closeModal() { document.getElementById('info-modal').style.display = 'none'; }
 
   function resetGameKeepNames() {
     document.getElementById('step4').style.display = 'none';
@@ -906,8 +921,10 @@
     renderPlayerInputs();
   }
 
+  // Initialisierung
+  loadSavedTheme();
+  updateGroupDropdown();
   renderPlayerInputs();
-  checkDeviceOS();
 </script>
 
 </body>
