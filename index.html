@@ -94,57 +94,32 @@
     }
     .btn-counter {
       background-color: var(--accent-teal);
-      color: white;
-      border: none;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      font-size: 1.5rem;
-      font-weight: bold;
-      cursor: pointer;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      color: white; border: none;
+      width: 40px; height: 40px;
+      border-radius: 50%; font-size: 1.5rem; font-weight: bold;
+      cursor: pointer; display: flex; justify-content: center; align-items: center;
     }
-    .count-display {
-      font-size: 1.4rem;
-      font-weight: bold;
-      width: 110px;
-      text-align: center;
-    }
+    .count-display { font-size: 1.4rem; font-weight: bold; width: 110px; text-align: center; }
 
     input[type="text"], input[type="number"], select {
-      padding: 10px;
-      border-radius: 8px;
+      padding: 10px; border-radius: 8px;
       border: 1px solid var(--border-color);
-      background: rgba(0,0,0,0.3);
-      color: var(--text-main);
-      font-size: 1rem;
-      width: 100%;
-      margin-bottom: 8px;
+      background: rgba(0,0,0,0.3); color: var(--text-main);
+      font-size: 1rem; width: 100%; margin-bottom: 8px;
     }
 
     .role-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin: 10px 0;
-      background: rgba(255,255,255,0.05);
-      padding: 10px 14px;
-      border-radius: 10px;
+      display: flex; justify-content: space-between; align-items: center;
+      margin: 10px 0; background: rgba(255,255,255,0.05);
+      padding: 10px 14px; border-radius: 10px;
     }
     .role-title { display: flex; align-items: center; gap: 6px; }
     .info-btn {
-      background: transparent;
-      border: 1px solid var(--accent-teal);
-      color: var(--accent-teal);
-      border-radius: 50%;
-      width: 22px; height: 22px;
-      font-size: 0.8rem; font-weight: bold;
-      cursor: pointer;
-      display: inline-flex; justify-content: center; align-items: center;
+      background: transparent; border: 1px solid var(--accent-teal);
+      color: var(--accent-teal); border-radius: 50%;
+      width: 22px; height: 22px; font-size: 0.8rem; font-weight: bold;
+      cursor: pointer; display: inline-flex; justify-content: center; align-items: center;
     }
-    .role-row.disabled { opacity: 0.4; }
     .role-row input[type="number"] { width: 60px; text-align: center; margin-bottom: 0; }
 
     .switch { position: relative; display: inline-block; width: 50px; height: 28px; }
@@ -177,19 +152,59 @@
       border-radius: 8px; cursor: pointer; width: 100%; margin-top: 8px;
     }
 
-    .turn-box {
-      background: rgba(255,255,255,0.05);
-      border-radius: 12px; padding: 25px;
-      text-align: center; margin-top: 15px;
-    }
-    .player-name-title { font-size: 1.8rem; font-weight: bold; color: var(--accent-teal); margin-bottom: 15px; }
-    .secret-role-display {
+    /* Pull-Up Card Container */
+    .card-reveal-area {
+      position: relative;
+      height: 320px;
+      width: 100%;
       background: rgba(0,0,0,0.4);
-      border: 2px dashed var(--accent-red);
-      border-radius: 10px; padding: 20px;
-      font-size: 1.4rem; font-weight: bold; color: var(--accent-green);
-      margin: 20px 0; min-height: 90px;
-      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      border: 2px dashed var(--accent-teal);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-top: 15px;
+    }
+
+    .under-role-content {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .role-text-display {
+      font-size: 1.6rem;
+      font-weight: bold;
+      color: var(--accent-green);
+      margin-top: 10px;
+    }
+
+    .swipe-card {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: var(--card-bg);
+      border: 2px solid var(--accent-teal);
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+      transition: transform 0.1s ease-out;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+    }
+    .swipe-card:active { cursor: grabbing; }
+
+    .card-handle {
+      width: 40px; height: 5px;
+      background: var(--border-color);
+      border-radius: 10px;
+      position: absolute; top: 12px;
     }
 
     .gm-list { list-style: none; padding: 0; margin: 10px 0; }
@@ -205,10 +220,8 @@
     
     .action-btn-group { display: flex; gap: 5px; }
     .btn-action {
-      background: rgba(0,0,0,0.3);
-      border: 1px solid var(--border-color);
-      border-radius: 6px; cursor: pointer;
-      padding: 4px 8px; font-size: 0.9rem; color: #fff;
+      background: rgba(0,0,0,0.3); border: 1px solid var(--border-color);
+      border-radius: 6px; cursor: pointer; padding: 4px 8px; font-size: 0.9rem; color: #fff;
     }
     .btn-action.active-bm { background: #ffd700; color: #121212; border-color: #ffd700; }
 
@@ -233,7 +246,6 @@
     }
     .night-flow-list li { margin-bottom: 8px; }
 
-    /* Timer Widget */
     .timer-box {
       background: rgba(0,0,0,0.3); border: 1px solid var(--border-color);
       border-radius: 12px; padding: 12px; text-align: center; margin-bottom: 15px;
@@ -245,7 +257,6 @@
       padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem;
     }
 
-    /* Modals */
     .modal-overlay {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0,0,0,0.85);
@@ -356,21 +367,30 @@
     <button class="primary-btn" id="start-game-btn" onclick="startGame()">Spiel starten</button>
   </div>
 
-  <!-- Schritt 3: Pass & Play mit Sicherheitsabfrage -->
+  <!-- Schritt 3: Pass & Play Karte zum Hochziehen -->
   <div id="step3" class="card" style="display: none;">
-    <div class="turn-box">
-      <div id="pass-guard-screen">
-        <div style="color: var(--text-muted); font-size: 0.95rem;">Gib das Handy weiter an:</div>
-        <div class="player-name-title" id="guard-player-name">Spieler</div>
-        <button class="primary-btn" onclick="confirmIdentity()">Ich bin's (Karte aufdecken)</button>
+    <h2 style="margin-bottom: 5px;">Rolle aufdecken</h2>
+    <p style="text-align: center; font-size: 0.85rem; color: var(--text-muted); margin-top:0;">Handy an den Mitspieler weitergeben</p>
+
+    <div class="card-reveal-area">
+      <!-- Versteckte Rolle darunter -->
+      <div class="under-role-content">
+        <div style="font-size: 0.85rem; color: var(--text-muted);">Deine Rolle ist:</div>
+        <div class="role-text-display" id="revealed-role-text">Werwolf 🐺</div>
       </div>
 
-      <div id="secret-role-screen" style="display: none;">
-        <div style="color: var(--text-muted); font-size: 0.95rem;">Deine geheime Rolle:</div>
-        <div class="secret-role-display" id="role-box-content"></div>
-        <button class="primary-btn" onclick="nextPlayerTurn()">Karte verdecken & Weitergeben</button>
+      <!-- Abdeckkarte oben drüber -->
+      <div class="swipe-card" id="swipe-card">
+        <div class="card-handle"></div>
+        <div style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 5px;">Gehört zu:</div>
+        <div style="font-size: 1.8rem; font-weight: bold; color: var(--accent-teal);" id="card-player-name">Spieler</div>
+        <div style="margin-top: 25px; font-size: 0.8rem; color: var(--accent-red); text-transform: uppercase; letter-spacing: 1px; font-weight: bold;">
+          👆 Ziehe die Karte nach oben
+        </div>
       </div>
     </div>
+
+    <button class="primary-btn" id="next-turn-btn" onclick="nextPlayerTurn()" style="display: none;">Rolle verdeckt & weitergeben</button>
   </div>
 
   <!-- Schritt 4: Ende / Erzähler-Übersicht -->
@@ -652,7 +672,7 @@
     }
   }
 
-  // --- Step 3 Pass & Play Logik ---
+  // --- Step 3 Drag-To-Reveal Card Logik ---
   function startGame() {
     useMayor = document.getElementById('toggle-buergermeister').checked;
 
@@ -683,27 +703,71 @@
     currentTurnIndex = 0;
     document.getElementById('step2').style.display = 'none';
     document.getElementById('step3').style.display = 'block';
-    setupTurnUI();
+    setupSwipeTurnUI();
   }
 
-  function setupTurnUI() {
+  function setupSwipeTurnUI() {
     const player = gamePlayers[currentTurnIndex];
-    document.getElementById('guard-player-name').innerText = player.name;
-    document.getElementById('pass-guard-screen').style.display = 'block';
-    document.getElementById('secret-role-screen').style.display = 'none';
+    document.getElementById('card-player-name').innerText = player.name;
+    document.getElementById('revealed-role-text').innerText = player.role;
+    document.getElementById('next-turn-btn').style.display = 'none';
+
+    const card = document.getElementById('swipe-card');
+    card.style.transform = 'translateY(0px)';
+    card.style.transition = 'transform 0.2s ease-out';
   }
 
-  function confirmIdentity() {
-    const player = gamePlayers[currentTurnIndex];
-    document.getElementById('role-box-content').innerHTML = `<span>${player.role}</span>`;
-    document.getElementById('pass-guard-screen').style.display = 'none';
-    document.getElementById('secret-role-screen').style.display = 'block';
+  // Drag Gesture Handlers
+  const card = document.getElementById('swipe-card');
+  let startY = 0;
+  let currentY = 0;
+  let isDragging = false;
+
+  card.addEventListener('mousedown', dragStart);
+  card.addEventListener('touchstart', dragStart, {passive: true});
+
+  window.addEventListener('mousemove', dragMove);
+  window.addEventListener('touchmove', dragMove, {passive: true});
+
+  window.addEventListener('mouseup', dragEnd);
+  window.addEventListener('touchend', dragEnd);
+
+  function dragStart(e) {
+    isDragging = true;
+    startY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+    card.style.transition = 'none';
+  }
+
+  function dragMove(e) {
+    if (!isDragging) return;
+    const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+    const deltaY = clientY - startY;
+
+    if (deltaY < 0 && deltaY > -240) {
+      currentY = deltaY;
+      card.style.transform = `translateY(${currentY}px)`;
+    }
+  }
+
+  function dragEnd() {
+    if (!isDragging) return;
+    isDragging = false;
+    card.style.transition = 'transform 0.2s ease-out';
+
+    if (currentY < -120) {
+      card.style.transform = 'translateY(-230px)';
+      document.getElementById('next-turn-btn').style.display = 'block';
+    } else {
+      card.style.transform = 'translateY(0px)';
+      document.getElementById('next-turn-btn').style.display = 'none';
+    }
+    currentY = 0;
   }
 
   function nextPlayerTurn() {
     currentTurnIndex++;
     if (currentTurnIndex < gamePlayers.length) {
-      setupTurnUI();
+      setupSwipeTurnUI();
     } else {
       renderGMScreen();
     }
