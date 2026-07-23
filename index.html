@@ -403,6 +403,19 @@
       </label>
     </div>
 
+    <hr style="border: 0; border-top: 1px solid #333; margin: 15px 0;">
+
+    <div class="role-row" id="row-buergermeister">
+      <div class="role-title">
+        <span>Bürgermeister 🎖️</span>
+        <button class="info-btn" onclick="showRoleInfo('buergermeister')">i</button>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="toggle-buergermeister" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+
     <p id="role-warning" style="text-align: center; color: #ff6b6b; font-size: 0.9rem;"></p>
     <button class="primary-btn" id="start-game-btn" onclick="startGame()">Spiel starten</button>
   </div>
@@ -411,7 +424,7 @@
   <div id="step3" class="card" style="display: none;">
     <div class="turn-box">
       <div class="instruction">Gib das Handy an:</div>
-      <div class="player-name-title" id="current-player-name">Henri</div>
+      <div class="player-name-title" id="current-player-name">Spieler</div>
 
       <div class="secret-role-display" id="role-box">
         <div id="role-text" style="display: none;"></div>
@@ -426,7 +439,7 @@
   <div id="step4" class="card" style="display: none;">
     <h2>📜 Erzähler-Übersicht</h2>
     <div id="win-banner-box"></div>
-    <p style="text-align: center; color: #aaa; font-size: 0.85rem;">Wähle den <b>Bürgermeister 🎖️</b> nach der Wahl. Klicke auf 💀 um Tote zu markieren.</p>
+    <p id="mayor-hint" style="text-align: center; color: #aaa; font-size: 0.85rem;">Wähle den <b>Bürgermeister 🎖️</b> nach der Wahl. Klicke auf 💀 um Tote zu markieren.</p>
     
     <ul class="gm-list" id="gm-roles-list"></ul>
 
@@ -440,7 +453,7 @@
 
     <ol class="night-flow-list" id="night-flow-list"></ol>
 
-    <button class="primary-btn" onclick="location.reload()">Neues Spiel starten</button>
+    <button class="primary-btn" onclick="resetGameKeepNames()">Neues Spiel starten (Namen behalten)</button>
   </div>
 </div>
 
@@ -473,6 +486,7 @@
   let activeNightTab = 1;
   let deferredPrompt;
   let thiefPlayerIndex = -1;
+  let useMayor = true;
 
   const specialRoles = ['seherin', 'hexe', 'amor', 'jaeger', 'blinzeln', 'matratze', 'dieb'];
 
@@ -545,7 +559,7 @@
     const currentValues = [];
     for(let i = 0; i < playerCount; i++) {
       const el = document.getElementById(`name-${i}`);
-      currentValues.push(el ? el.value : '');
+      currentValues.push(el ? el.value : (playerNames[i] || ''));
     }
 
     container.innerHTML = '';
@@ -587,6 +601,7 @@
     document.getElementById('toggle-blinzeln').checked = false;
     document.getElementById('toggle-matratze').checked = false;
     document.getElementById('toggle-dieb').checked = false;
+    document.getElementById('toggle-buergermeister').checked = true;
   }
 
   function adjustVillageCount() {
@@ -597,7 +612,7 @@
       if(document.getElementById(`toggle-${role}`).checked) specialCount++;
     });
 
-    let targetDorf = playerNames.length - wolves - specialCount;
+    let targetDorf = playerCount - wolves - specialCount;
     if (targetDorf < 0) targetDorf = 0;
 
     document.getElementById('count-dorf').value = targetDorf;
@@ -662,6 +677,8 @@
   }
 
   function startGame() {
+    useMayor = document.getElementById('toggle-buergermeister').checked;
+
     let rolesList = [];
     for(let i=0; i < (parseInt(document.getElementById('count-werwolf').value)||0); i++) rolesList.push('Werwolf 🐺');
     for(let i=0; i < (parseInt(document.getElementById('count-dorf').value)||0); i++) rolesList.push('Dorfbewohner 👨‍🌾');
@@ -766,9 +783,7 @@
     if (!isNaN(targetIdx) && thiefPlayerIndex !== -1) {
       const targetRole = gamePlayers[targetIdx].role;
       
-      // Der Dieb bekommt die Rolle des Ziel-Spielers
       gamePlayers[thiefPlayerIndex].role = targetRole;
-      // Der getauschte Spieler wird zum Dorfbewohner
       gamePlayers[targetIdx].role = 'Dorfbewohner 👨‍🌾';
 
       closeThiefModal();
@@ -850,6 +865,13 @@
     const list = document.getElementById('gm-roles-list');
     list.innerHTML = '';
 
+    const mayorHint = document.getElementById('mayor-hint');
+    if (useMayor) {
+      mayorHint.innerHTML = 'Wähle den <b>Bürgermeister 🎖️</b> nach der Wahl. Klicke auf 💀 um Tote zu markieren.';
+    } else {
+      mayorHint.innerHTML = 'Klicke auf 💀 um Tote zu markieren.';
+    }
+
     gamePlayers.forEach((p, idx) => {
       const li = document.createElement('li');
       li.className = `gm-item ${p.isDead ? 'dead' : ''}`;
@@ -864,7 +886,7 @@
         </div>
         <div class="action-btn-group">
           ${isThief ? `<button class="btn-action" onclick="openThiefSwapModal(${idx})">🥷 Tauschen</button>` : ''}
-          <button class="btn-action ${p.isMayor ? 'active-bm' : ''}" onclick="toggleMayor(${idx})">🎖️</button>
+          ${useMayor ? `<button class="btn-action ${p.isMayor ? 'active-bm' : ''}" onclick="toggleMayor(${idx})">🎖️</button>` : ''}
           <button class="btn-action" onclick="toggleKill(${idx})">${p.isDead ? '🔄' : '💀'}</button>
         </div>
       `;
@@ -876,6 +898,12 @@
 
     document.getElementById('step3').style.display = 'none';
     document.getElementById('step4').style.display = 'block';
+  }
+
+  function resetGameKeepNames() {
+    document.getElementById('step4').style.display = 'none';
+    document.getElementById('step1').style.display = 'block';
+    renderPlayerInputs();
   }
 
   renderPlayerInputs();
